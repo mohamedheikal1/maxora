@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlElement">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maxora - Digital Growth & Tech Solutions</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#050a14',
+                            deepBlue: '#002244',
+                            electricBlue: '#0055ff',
+                            skyBlue: '#38bdf8',
+                            darkNavy: '#001a33',
+                            silver: '#e2e8f0',
+                            accent: '#38bdf8'
+                        }
+                    },
+                    fontFamily: {
+                        arabic: ['Cairo', 'sans-serif'],
+                        english: ['Montserrat', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="antialiased" id="body">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 glass-panel border-b border-brand-deepBlue/50 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <div class="flex items-center gap-3 cursor-pointer opacity-0 animate-fadeInDown" onclick="scrollToSection('hero')" style="animation-delay: 0.1s">
+                    <img src="MAXORA png white.png" alt="Maxora Logo" class="w-10 h-10 object-contain logo-animate" title="Maxora">
+                    <span class="font-english font-bold text-2xl tracking-wider text-white">MAXORA</span>
+                </div>
+
+                <!-- Nav Links -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8 space-x-reverse">
+                        <button onclick="scrollToSection('hero')" class="nav-link active px-3 py-2 rounded-md text-sm font-semibold hover:text-brand-accent transition-colors opacity-0 animate-fadeInDown" style="animation-delay: 0.2s" data-ar="الرئيسية" data-en="Home">الرئيسية</button>
+                        <button onclick="scrollToSection('vision')" class="nav-link px-3 py-2 rounded-md text-sm font-semibold text-gray-300 hover:text-brand-accent transition-colors opacity-0 animate-fadeInDown" style="animation-delay: 0.3s" data-ar="رؤيتنا" data-en="Vision">رؤيتنا</button>
+                        <button onclick="scrollToSection('services')" class="nav-link px-3 py-2 rounded-md text-sm font-semibold text-gray-300 hover:text-brand-accent transition-colors opacity-0 animate-fadeInDown" style="animation-delay: 0.4s" data-ar="الخدمات" data-en="Services">الخدمات</button>
+                        <button onclick="scrollToSection('impact')" class="nav-link px-3 py-2 rounded-md text-sm font-semibold text-gray-300 hover:text-brand-accent transition-colors opacity-0 animate-fadeInDown" style="animation-delay: 0.5s" data-ar="تأثيرنا" data-en="Impact">تأثيرنا</button>
+                    </div>
+                </div>
+
+                <!-- Language Switcher & Social -->
+                <div class="flex items-center gap-4">
+                    <!-- Theme Toggle Button -->
+                    <button id="themeToggle" onclick="toggleTheme()" class="theme-toggle-btn opacity-0 animate-fadeInDown" style="animation-delay: 0.65s" title="Toggle Light/Dark Mode">
+                        <span class="theme-toggle-text">🌙</span>
+                    </button>
+
+                    <!-- Language Toggle -->
+                    <button id="langToggle" onclick="toggleLanguage()" class="lang-toggle-btn opacity-0 animate-fadeInDown" style="animation-delay: 0.7s" title="Toggle Language">
+                        <span class="lang-toggle-text">EN</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-20" id="mainContent">
+
+        <!-- Hero Section -->
+        <section id="hero" class="min-h-[90vh] flex items-center justify-center relative px-4 py-20 overflow-hidden">
+            <div class="absolute inset-0 overflow-hidden z-0">
+                <div class="absolute -top-[20%] -right-[10%] w-[50%] h-[50%] rounded-full bg-brand-electricBlue/10 blur-[120px]"></div>
+                <div class="absolute top-[60%] -left-[10%] w-[40%] h-[40%] rounded-full bg-brand-accent/5 blur-[100px]"></div>
+            </div>
+            
+            <div class="max-w-4xl mx-auto text-center z-10">
+                <div class="mb-8 flex justify-center opacity-0 animate-slideUp" style="animation-delay: 0.1s">
+                    <img src="MAXORA png white.png" alt="Maxora Logo" class="w-40 h-40 object-contain logo-animate" title="Maxora Logo">
+                </div>
+                <p class="text-brand-accent font-english tracking-[0.2em] uppercase text-sm mb-4 opacity-0 animate-slideUp" style="animation-delay: 0.2s" data-ar="وكالة النمو الرقمي + حلول تقنية" data-en="Digital Growth Agency + Tech Solutions">Digital Growth Agency + Tech Solutions</p>
+                <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+                    <span class="block text-gradient font-english mb-2 opacity-0 animate-slideUp" style="animation-delay: 0.3s" data-ar="عظّم تأثيرك" data-en="Maximize Your Impact">Maximize Your Impact</span>
+                    <span class="block opacity-0 animate-slideUp" style="animation-delay: 0.4s" data-ar="إشراق للنمو لا يتوقف" data-en="illuminate Growth Never Stops">إشراق للنمو لا يتوقف</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-400 mb-10 max-w-3xl mx-auto leading-relaxed opacity-0 animate-slideUp" style="animation-delay: 0.5s" data-ar="نحن في Maxora لا نقدم خدمات منفصلة، بل نصنع هوية رقمية متكاملة. ندمج قوة البرمجيات مع ذكاء التسويق الرقمي لنمنح علامتك التجارية أقصى تأثير وهالة من التميز في سوق مزدحم." data-en="At Maxora, we don't offer separate services, but create an integrated digital identity. We combine the power of software with digital marketing intelligence to give your brand maximum impact and a halo of distinction in a crowded market.">نحن في Maxora لا نقدم خدمات منفصلة، بل نصنع هوية رقمية متكاملة. ندمج قوة البرمجيات مع ذكاء التسويق الرقمي لنمنح علامتك التجارية أقصى تأثير وهالة من التميز في سوق مزدحم.</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center opacity-0 animate-slideUp" style="animation-delay: 0.6s">
+                    <button onclick="scrollToSection('services')" class="px-8 py-4 bg-brand-electricBlue hover:bg-blue-600 text-white rounded-lg font-bold transition-all shadow-[0_0_20px_rgba(0,85,255,0.4)] hover:shadow-[0_0_30px_rgba(0,85,255,0.6)] hover:scale-105" data-ar="استكشف خدماتنا" data-en="Explore Our Services">استكشف خدماتنا</button>
+                    <button onclick="scrollToSection('booking')" class="px-8 py-4 glass-panel hover:bg-white/5 text-white rounded-lg font-bold transition-all border border-brand-accent/30 hover:scale-105" data-ar="احجز موعدك" data-en="Book Now">احجز موعدك</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Promo Section - DYNAMIC -->
+        <section id="promo" class="py-24 bg-gradient-to-b from-brand-dark/80 to-brand-deepBlue/40 relative z-10 border-t border-brand-accent/20 overflow-hidden">
+            <div class="absolute inset-0 opacity-[0.03] pointer-events-none">
+                <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+                    <defs>
+                        <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
+                            <path d="M 100 0 L 0 0 0 100" fill="none" stroke="currentColor" stroke-width="1"/>
+                        </pattern>
+                    </defs>
+                    <circle cx="200" cy="150" r="50" stroke="currentColor" stroke-width="2" fill="none" opacity="0.3"/>
+                    <circle cx="900" cy="600" r="80" stroke="currentColor" stroke-width="2" fill="none" opacity="0.3"/>
+                    <line x1="200" y1="150" x2="400" y2="250" stroke="currentColor" stroke-width="1" opacity="0.2"/>
+                    <line x1="900" y1="600" x2="700" y2="400" stroke="currentColor" stroke-width="1" opacity="0.2"/>
+                </svg>
+            </div>
+
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <!-- Left Content - Dynamic -->
+                    <div class="text-left">
+                        <!-- Web Development Promo -->
+                        <div id="promo-web" class="promo-content">
+                            <h2 class="text-4xl md:text-5xl font-bold mb-6 leading-tight opacity-0 animate-slideUp" style="animation-delay: 0.1s">
+                                <span data-ar="موقعك الحالي ضعيف؟" data-en="Is Your Website Weak?">Is Your Website Weak?</span>
+                            </h2>
+                            <p class="text-xl text-gray-300 mb-6 opacity-0 animate-slideUp" style="animation-delay: 0.2s">
+                                <span data-ar="ارتقِ لمستوى النخبة مع" data-en="Upgrade to Elite Level with">Upgrade to Elite Level with</span>
+                                <span class="font-english text-brand-accent"> MAXORA</span>
+                            </p>
+                            
+                            <ul class="space-y-4 mb-8 opacity-0 animate-slideUp" style="animation-delay: 0.3s">
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="تصميم احترافي و حديث" data-en="Professional & Modern Design">Professional & Modern Design</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="أداء سريع جداً" data-en="Lightning Fast Performance">Lightning Fast Performance</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="متوافق مع كل الأجهزة" data-en="Mobile Responsive">Mobile Responsive</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="معايير SEO عالية" data-en="SEO Optimized">SEO Optimized</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="دعم كامل بعد التسليم" data-en="Full Post-Launch Support">Full Post-Launch Support</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Mobile Apps Promo -->
+                        <div id="promo-mobile" class="promo-content" style="display: none;">
+                            <h2 class="text-4xl md:text-5xl font-bold mb-6 leading-tight opacity-0 animate-slideUp" style="animation-delay: 0.1s">
+                                <span data-ar="تطبيق موبايل احترافي؟" data-en="Need a Professional Mobile App?">Need a Professional Mobile App?</span>
+                            </h2>
+                            <p class="text-xl text-gray-300 mb-6 opacity-0 animate-slideUp" style="animation-delay: 0.2s">
+                                <span data-ar="وصّل عملاءك أينما ك��نوا مع" data-en="Connect with your customers anywhere using">Connect with your customers anywhere using</span>
+                                <span class="font-english text-brand-accent"> MAXORA</span>
+                            </p>
+                            
+                            <ul class="space-y-4 mb-8 opacity-0 animate-slideUp" style="animation-delay: 0.3s">
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="iOS و Android معاً" data-en="iOS & Android Support">iOS & Android Support</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="واجهة سهلة الاستخدام" data-en="Intuitive User Interface">Intuitive User Interface</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="تحديثات دورية مجانية" data-en="Free Regular Updates">Free Regular Updates</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="تحليلات مفصلة" data-en="Detailed Analytics">Detailed Analytics</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="تكامل مع جميع الخدمات" data-en="Seamless Integration">Seamless Integration</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- UI/UX Design Promo -->
+                        <div id="promo-ui-ux" class="promo-content" style="display: none;">
+                            <h2 class="text-4xl md:text-5xl font-bold mb-6 leading-tight opacity-0 animate-slideUp" style="animation-delay: 0.1s">
+                                <span data-ar="تصميم مميز يبقى في الذاكرة؟" data-en="Design That Stays in Minds?">Design That Stays in Minds?</span>
+                            </h2>
+                            <p class="text-xl text-gray-300 mb-6 opacity-0 animate-slideUp" style="animation-delay: 0.2s">
+                                <span data-ar="اجعل تجربة المستخدم لا تُنسى مع" data-en="Create unforgettable experiences with">Create unforgettable experiences with</span>
+                                <span class="font-english text-brand-accent"> MAXORA</span>
+                            </p>
+                            
+                            <ul class="space-y-4 mb-8 opacity-0 animate-slideUp" style="animation-delay: 0.3s">
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="تصميم يعكس هويتك" data-en="Brand Identity Design">Brand Identity Design</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="تجربة مستخدم استثنائية" data-en="Exceptional User Experience">Exceptional User Experience</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="تحليل تسلوك المستخدم" data-en="User Behavior Analysis">User Behavior Analysis</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="تصاميم تزيد التحويلات" data-en="Conversion-Focused Design">Conversion-Focused Design</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="بروتوتايبات تفاعلية" data-en="Interactive Prototypes">Interactive Prototypes</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Digital Marketing Promo -->
+                        <div id="promo-marketing" class="promo-content" style="display: none;">
+                            <h2 class="text-4xl md:text-5xl font-bold mb-6 leading-tight opacity-0 animate-slideUp" style="animation-delay: 0.1s">
+                                <span data-ar="مبيعاتك راكدة؟" data-en="Sales Not Growing?">Sales Not Growing?</span>
+                            </h2>
+                            <p class="text-xl text-gray-300 mb-6 opacity-0 animate-slideUp" style="animation-delay: 0.2s">
+                                <span data-ar="انفجر النمو مع تسويق ذكي من" data-en="Explode your growth with smart marketing from">Explode your growth with smart marketing from</span>
+                                <span class="font-english text-brand-accent"> MAXORA</span>
+                            </p>
+                            
+                            <ul class="space-y-4 mb-8 opacity-0 animate-slideUp" style="animation-delay: 0.3s">
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="إعلانات ممولة مستهدفة" data-en="Targeted Paid Ads">Targeted Paid Ads</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="محتوى إبداعي يجذب" data-en="Creative Content Creation">Creative Content Creation</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="ROI عالي جداً" data-en="Maximum ROI">Maximum ROI</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="تقارير شفافة يومية" data-en="Daily Transparent Reports">Daily Transparent Reports</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="استراتيجية مخصصة" data-en="Custom Strategy">Custom Strategy</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Branding Promo -->
+                        <div id="promo-branding" class="promo-content" style="display: none;">
+                            <h2 class="text-4xl md:text-5xl font-bold mb-6 leading-tight opacity-0 animate-slideUp" style="animation-delay: 0.1s">
+                                <span data-ar="هويتك ضائعة وسط المنافسين؟" data-en="Lost in the Competition?">Lost in the Competition?</span>
+                            </h2>
+                            <p class="text-xl text-gray-300 mb-6 opacity-0 animate-slideUp" style="animation-delay: 0.2s">
+                                <span data-ar="انفرد عن الآخرين مع علامة تجارية قوية من" data-en="Stand out with powerful branding from">Stand out with powerful branding from</span>
+                                <span class="font-english text-brand-accent"> MAXORA</span>
+                            </p>
+                            
+                            <ul class="space-y-4 mb-8 opacity-0 animate-slideUp" style="animation-delay: 0.3s">
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="هوية بصرية متكاملة" data-en="Complete Visual Identity">Complete Visual Identity</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="شخصية فريدة للعلامة" data-en="Unique Brand Personality">Unique Brand Personality</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="تصاميم متسقة في كل القنوات" data-en="Consistent Cross-Channel Design">Consistent Cross-Channel Design</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="قصة علامة تحكيها" data-en="Compelling Brand Story">Compelling Brand Story</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="معايير الاستخدام الكاملة" data-en="Complete Brand Guidelines">Complete Brand Guidelines</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Consultation Promo -->
+                        <div id="promo-consultation" class="promo-content" style="display: none;">
+                            <h2 class="text-4xl md:text-5xl font-bold mb-6 leading-tight opacity-0 animate-slideUp" style="animation-delay: 0.1s">
+                                <span data-ar="محتار في الخطة الصحيحة؟" data-en="Confused About Your Path?">Confused About Your Path?</span>
+                            </h2>
+                            <p class="text-xl text-gray-300 mb-6 opacity-0 animate-slideUp" style="animation-delay: 0.2s">
+                                <span data-ar="استشارة متخصصة من" data-en="Expert consultation from">Expert consultation from</span>
+                                <span class="font-english text-brand-accent"> MAXORA</span>
+                            </p>
+                            
+                            <ul class="space-y-4 mb-8 opacity-0 animate-slideUp" style="animation-delay: 0.3s">
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="تقييم شامل لوضعك الحالي" data-en="Complete Current Status Audit">Complete Current Status Audit</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="استراتيجية مخصصة" data-en="Tailored Strategy">Tailored Strategy</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="خطة تنفيذ واضحة" data-en="Clear Execution Plan">Clear Execution Plan</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="دعم مستمر من الخبراء" data-en="Ongoing Expert Support">Ongoing Expert Support</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-300">
+                                    <i class="fas fa-check text-brand-accent text-lg"></i>
+                                    <span data-ar="نتائج قابلة للقياس" data-en="Measurable Results">Measurable Results</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-4 opacity-0 animate-slideUp" style="animation-delay: 0.4s">
+                            <button onclick="scrollToSection('booking')" class="px-8 py-4 bg-brand-accent hover:bg-opacity-90 text-black rounded-lg font-bold transition-all shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:shadow-[0_0_30px_rgba(212,175,55,0.6)] hover:scale-105" data-ar="احجز موعدك" data-en="Book Now">احجز موعدك</button>
+                            <button onclick="window.location.href='https://wa.me/201055707007'" class="px-8 py-4 glass-panel hover:bg-white/5 text-white rounded-lg font-bold transition-all border border-brand-accent/50 hover:scale-105" data-ar="WhatsApp" data-en="WhatsApp">WhatsApp</button>
+                        </div>
+                    </div>
+
+                    <!-- Right Stats - Dynamic -->
+                    <div class="opacity-0 animate-slideInRight" style="animation-delay: 0.3s">
+                        <!-- Web Stats -->
+                        <div id="stats-web" class="stats-content glass-panel p-8 rounded-2xl border border-brand-accent/20 mb-6">
+                            <div class="text-center mb-6">
+                                <p class="text-sm text-brand-accent font-english font-bold tracking-widest" data-ar="الفوائد" data-en="BENEFITS">BENEFITS</p>
+                            </div>
+                            <div class="space-y-6">
+                                <div class="text-center">
+                                    <p class="text-4xl font-bold text-brand-accent mb-2">3X</p>
+                                    <p class="text-gray-300 text-sm" data-ar="زيادة الحركة" data-en="Traffic Increase">Traffic Increase</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-4xl font-bold text-brand-accent mb-2">95+</p>
+                                    <p class="text-gray-300 text-sm" data-ar="سرعة PageSpeed" data-en="PageSpeed Score">PageSpeed Score</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-4xl font-bold text-brand-accent mb-2">100%</p>
+                                    <p class="text-gray-300 text-sm" data-ar="متوافق مع الأجهزة" data-en="Mobile Compatible">Mobile Compatible</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mobile Stats -->
+                        <div id="stats-mobile" class="stats-content glass-panel p-8 rounded-2xl border border-brand-accent/20 mb-6" style="display: none;">
+                            <div class="text-center mb-6">
+                                <p class="text-sm text-brand-accent font-english font-bold tracking-widest" data-ar="الفوائد" data-en="BENEFITS">BENEFITS</p>
+                            </div>
+                            <div class="space-y-6">
+                                <div class="text-center">
+                                    <p class="text-4xl font-bold text-brand-accent mb-2">2</p>
+                                    <p class="text-gray-300 text-sm" data-ar="منصة (iOS & Android)" data-en="Platforms (iOS & Android)">Platforms (iOS & Android)</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-4xl font-bold text-brand-accent mb-2">∞</p>
+                                    <p class="text-gray-300 text-sm" data-ar="إمكانيات لا محدودة" data-en="Unlimited Features">Unlimited Features</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-4xl font-bold text-brand-accent mb-2">24/7</p>
+                                    <p class="text-gray-300 text-sm" data-ar="متاح دائماً للعملاء" data-en="Always Available">Always Available</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- UI/UX Stats -->
+                        <div id="stats-ui-ux" class="stats-content glass-panel p-8 rounded-2xl border border-brand-accent/20 mb-6" style="display: none;">
+                            <div class="text-center mb-6">
+                                <p class="text-sm text-brand-accent font-english font-bold tracking-widest" data-ar="الفوائد" data-en="BENEFITS">BENEFITS</p>
+                            </div>
+                            <div class="space-y-6">
+                                <div class="text-center">
+                                    <p class="text-4xl font-bold text-brand-accent mb-2">5X</p>
+                                    <p class="text-gray-300 text-sm" data-ar="تحسن في المشاركة" data-en="Engagement Boost">Engagement Boost</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-4xl font-bold text-brand-accent mb-2">40%</p>
+                                    <p class="text-gray-300 text-sm" data-ar="زيادة التحويلات" data-en="Conversion Increase">Conversion Increase</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-4xl font-bold text-brand-accent mb-2">🎨</p>
+                                    <p class="text-gray-300 text-sm" data-ar="تصميم يلا ينسى" data-en="Unforgettable Design">Unforgettable Design</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Marketing Stats -->
+                        <div id="stats-marketing" class="stats-content glass-panel p-8 rounded-2xl border border-brand-accent/20 mb-6" style="display: none;">
+                            <div class="text-center mb-6">
+                                <p class="text-sm text-brand-accent font-english font-bold tracking-widest" data-ar="الفوائد" data-en="BENEFITS">BENEFITS</p>
+                            </div>
+                            <div class="space-y-6">
+                                <div class="text-center">
+                                    <p class="text-4xl font-bold text-brand-accent mb-2">10X</p>
+                                    <p class="text-gray-300 text-sm" data-ar="عائد الاستثمار" data-en="ROI Potential">ROI Potential</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-4xl font-bold text-brand-accent mb-2">50%</p>
+                                    <p class="text-gray-300 text-sm" data-ar="تقليل تكاليف الاعلان" data-en="Cost Reduction">Cost Reduction</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-4xl font-bold text-brand-accent mb-2">📈</p>
+                                    <p class="text-gray-300 text-sm" data-ar="نمو مستمر" data-en="Continuous Growth">Continuous Growth</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Branding Stats -->
+                        <div id="stats-branding" class="stats-content glass-panel p-8 rounded-2xl border border-brand-accent/20 mb-6" style="display: none;">
+                            <div class="text-center mb-6">
+                                <p class="text-sm text-brand-accent font-english font-bold tracking-widest" data-ar="الفوائد" data-en="BENEFITS">BENEFITS</p>
+                            </div>
+                            <div class="space-y-6">
+                                <div class="text-center">
+                                    <p class="text-4xl font-bold text-brand-accent mb-2">1st</p>
+                                    <p class="text-gray-300 text-sm" data-ar="خيار المستهلك الأول" data-en="Top Consumer Choice">Top Consumer Choice</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-4xl font-bold text-brand-accent mb-2">70%</p>
+                                    <p class="text-gray-300 text-sm" data-ar="ولاء أعلى" data-en="Higher Loyalty">Higher Loyalty</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-4xl font-bold text-brand-accent mb-2">💎</p>
+                                    <p class="text-gray-300 text-sm" data-ar="قيمة وهيبة" data-en="Premium Value">Premium Value</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Consultation Stats -->
+                        <div id="stats-consultation" class="stats-content glass-panel p-8 rounded-2xl border border-brand-accent/20 mb-6" style="display: none;">
+                            <div class="text-center mb-6">
+                                <p class="text-sm text-brand-accent font-english font-bold tracking-widest" data-ar="الفوائد" data-en="BENEFITS">BENEFITS</p>
+                            </div>
+                            <div class="space-y-6">
+                                <div class="text-center">
+                                    <p class="text-4xl font-bold text-brand-accent mb-2">100%</p>
+                                    <p class="text-gray-300 text-sm" data-ar="خطة محددة" data-en="Clear Roadmap">Clear Roadmap</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-4xl font-bold text-brand-accent mb-2">∞</p>
+                                    <p class="text-gray-300 text-sm" data-ar="دعم مستمر" data-en="Continuous Support">Continuous Support</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-4xl font-bold text-brand-accent mb-2">✓</p>
+                                    <p class="text-gray-300 text-sm" data-ar="نجاح مضمون" data-en="Guaranteed Success">Guaranteed Success</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Vision Section -->
+        <section id="vision" class="py-24 bg-gradient-to-b from-brand-dark/80 to-brand-deepBlue/20 relative z-10 border-t border-white/5">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4 opacity-0 animate-slideUp" style="animation-delay: 0.1s" data-ar="فلسفة التسمية والـ Vibe" data-en="Naming Philosophy & Vibe">فلسفة التسمية والـ Vibe</h2>
+                    <p class="text-gray-400 max-w-2xl mx-auto text-lg opacity-0 animate-slideUp" style="animation-delay: 0.2s" data-ar="يستعرض هذا القسم تحليل لاسم Maxora وكيف يعكس الرسالة الأساسية للشركة. لقد تم اختيار الاسم ليكون مبتكراً وسهل الحفظ ويعكس طاقة النمو والتميز." data-en="This section reviews the analysis of the name Maxora and how it reflects the company's core message. The name was chosen to be innovative, memorable, and reflect the energy of growth and excellence.">
+                        يستعرض هذا القسم تحليل لاسم "Maxora" وكيف يعكس الرسالة الأساسية للشركة. لقد تم اختيار الاسم ليكون مبتكراً وسهل الحفظ ويعكس طاقة النمو والتميز.
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="glass-panel p-10 rounded-2xl border border-brand-accent/20 relative overflow-hidden group opacity-0 animate-slideInLeft" style="animation-delay: 0.3s">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-brand-electricBlue/20 rounded-full blur-[50px] group-hover:bg-brand-electricBlue/40 transition-all duration-500"></div>
+                        <h3 class="text-6xl font-english font-bold text-brand-accent mb-4">MAX</h3>
+                        <div class="h-1 w-12 bg-gradient-to-r from-brand-accent to-transparent mb-6"></div>
+                        <p class="text-2xl font-bold mb-3 text-white" data-ar="أقصى تأثير وقوة" data-en="Maximum Impact & Power">أقصى تأثير وقوة</p>
+                        <p class="text-gray-400 text-lg leading-relaxed" data-ar="كلمة تعبر عن الوصول للحد الأقصى (Maximum). توحي بالـ Power، Growth، والقدرة على إحداث تغيير جذري وتأثير قوي في السوق الرقمي من خلال التكنولوجيا والتسويق." data-en="A word expressing reaching the maximum (Maximum). It suggests Power, Growth, and the ability to create radical change and strong impact in the digital market through technology and marketing.">
+                            كلمة تعبر عن الوصول للحد الأقصى (Maximum). توحي بالـ Power، Growth، والقدرة على إحداث تغيير جذري وتأثير قوي في السوق الرقمي من خلال التكنولوجيا والتسويق.
+                        </p>
+                    </div>
+
+                    <div class="glass-panel p-10 rounded-2xl border border-brand-accent/20 relative overflow-hidden group opacity-0 animate-slideInRight" style="animation-delay: 0.4s">
+                        <div class="absolute bottom-0 left-0 w-32 h-32 bg-yellow-500/10 rounded-full blur-[50px] group-hover:bg-yellow-500/20 transition-all duration-500"></div>
+                        <h3 class="text-6xl font-english font-bold text-white mb-4">ORA</h3>
+                        <div class="h-1 w-12 bg-gradient-to-r from-white to-transparent mb-6"></div>
+                        <p class="text-2xl font-bold mb-3 text-white" data-ar="هالة من الإشراق والتميز" data-en="Aura of Radiance & Excellence">هالة من الإشراق والتميز</p>
+                        <p class="text-gray-400 text-lg leading-relaxed" data-ar="مأخوذة من كلمات مثل Aura (هالة) أو Horizon (أفق). تعطي إيحاءً بالـ Premium Vibe، الإشراق، والنور الذي يميز العلامات التجارية التي نعمل معها وسط المنافسين." data-en="Derived from words like Aura or Horizon. It suggests a Premium Vibe, radiance, and the light that distinguishes the brands we work with among competitors.">
+                            مأخوذة من كلمات مثل Aura (هالة) أو Horizon (أفق). تعطي إيحاءً بالـ Premium Vibe، الإشراق، والنور الذي يميز العلامات التجارية التي نعمل معها وسط المنافسين.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services" class="py-24 relative z-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4 opacity-0 animate-slideUp" style="animation-delay: 0.1s" data-ar="نموذج العمل المتكامل" data-en="Integrated Business Model">نموذج العمل المتكامل</h2>
+                    <p class="text-gray-400 max-w-2xl mx-auto text-lg mb-8 opacity-0 animate-slideUp" style="animation-delay: 0.2s" data-ar="هنا نستعرض تفاصيل خدمات Maxora. يمكنك التفاعل مع الأزرار أدناه لتصفية الخدمات بين الحلول البرمجية وخدمات النمو التسويقي، لتوضيح كيف نغطي كافة احتياجات العلامات التجارية الحديثة." data-en="Here we review the details of Maxora's services. You can interact with the buttons below to filter services between programming solutions and marketing growth services, showing how we cover all needs of modern brands.">
+                        هنا نستعرض تفاصيل خدمات Maxora. يمكنك التفاعل مع الأزرار أدناه لتصفية الخدمات بين الحلول البرمجية وخدمات النمو التسويقي، لتوضيح كيف نغطي كافة احتياجات العلامات التجارية الحديثة.
+                    </p>
+                    
+                    <div class="inline-flex bg-gray-900/50 rounded-lg p-1 border border-gray-800">
+                        <button onclick="filterServices('all')" id="btn-all" class="px-6 py-2 rounded-md font-semibold bg-brand-electricBlue text-white transition-all opacity-0 animate-slideUp" style="animation-delay: 0.3s" data-ar="الكل" data-en="All">الكل</button>
+                        <button onclick="filterServices('tech')" id="btn-tech" class="px-6 py-2 rounded-md font-semibold text-gray-400 hover:text-white transition-all opacity-0 animate-slideUp" style="animation-delay: 0.4s" data-ar="Tech Solutions" data-en="Tech Solutions">Tech Solutions</button>
+                        <button onclick="filterServices('marketing')" id="btn-marketing" class="px-6 py-2 rounded-md font-semibold text-gray-400 hover:text-white transition-all opacity-0 animate-slideUp" style="animation-delay: 0.5s" data-ar="Growth Marketing" data-en="Growth Marketing">Growth Marketing</button>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="services-grid">
+                </div>
+            </div>
+        </section>
+
+        <!-- Booking Section -->
+        <section id="booking" class="py-24 bg-gradient-to-b from-brand-deepBlue/10 to-brand-dark relative z-10 border-t border-white/5">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4 opacity-0 animate-slideUp" style="animation-delay: 0.1s" data-ar="احجز موعدك الآن" data-en="Schedule Your Meeting Now">احجز موعدك الآن</h2>
+                    <p class="text-gray-400 max-w-2xl mx-auto text-lg opacity-0 animate-slideUp" style="animation-delay: 0.2s" data-ar="ملأ الاستمارة أدناه واختر الخدمة التي تناسب احتياجاتك. سنتواصل معك قريباً!" data-en="Fill out the form below and select the service that suits your needs. We'll get back to you soon!">
+                        ملأ الاستمارة أدناه واختر الخدمة التي تناسب احتياجاتك. سنتواصل معك قريباً!
+                    </p>
+                </div>
+
+                <div id="successMessage" class="success-message">
+                    <i class="fas fa-check-circle"></i>
+                    <div>
+                        <strong data-ar="نجح!" data-en="Success!">نجح!</strong>
+                        <p data-ar="تم استقبال طلبك بنجاح. سيتم التواصل معك قريباً عبر البريد و WhatsApp" data-en="Your booking has been received successfully. We'll contact you soon via email and WhatsApp">تم استقبال طلبك بنجاح. سيتم التواصل معك قريباً عبر البريد و WhatsApp</p>
+                    </div>
+                </div>
+
+                <form id="bookingForm" class="glass-panel p-8 rounded-2xl border border-brand-accent/20 opacity-0 animate-slideUp" style="animation-delay: 0.3s">
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div class="form-group">
+                            <label class="form-label" data-ar="الاسم الكامل" data-en="Full Name">الاسم الكامل</label>
+                            <input type="text" name="fullName" class="form-input" placeholder="اسمك" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-ar="البريد الإلكتروني" data-en="Email Address">البريد الإلكتروني</label>
+                            <input type="email" name="email" class="form-input" placeholder="email@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-ar="رقم الهاتف" data-en="Phone Number">رقم الهاتف</label>
+                            <div class="phone-input-wrapper">
+                                <div class="country-selector" id="countrySelector" onclick="toggleCountryDropdown()">
+                                    <span class="country-flag" id="selectedFlag">🇪🇬</span>
+                                    <span class="country-code" id="selectedCode">+20</span>
+                                    <i class="fas fa-chevron-down country-chevron" id="countryChevron"></i>
+                                </div>
+                                <input type="tel" name="phone" id="phoneInput" class="form-input phone-number-input" placeholder="1234567890" required>
+                                <div class="country-dropdown" id="countryDropdown">
+                                    <div class="country-search-wrapper">
+                                        <i class="fas fa-search country-search-icon"></i>
+                                        <input type="text" id="countrySearch" class="country-search-input" placeholder="ابحث عن دولة..." oninput="filterCountries(this.value)">
+                                    </div>
+                                    <div class="country-list" id="countryList"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-ar="اسم الشركة" data-en="Company Name">اسم الشركة</label>
+                            <input type="text" name="company" class="form-input" placeholder="شركتك" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-ar="الخدمة المطلوبة" data-en="Service Required">الخدمة المطلوبة</label>
+                            <select name="service" class="form-select" onchange="updatePromoContent(this.value)" required>
+                                <option value="" data-ar="اختر خدمة" data-en="Select Service">اختر خدمة</option>
+                                <option value="web" data-ar="تطوير موقع ويب" data-en="Web Development">تطوير موقع ويب</option>
+                                <option value="mobile" data-ar="تطبيق موبايل" data-en="Mobile App">تطبيق موبايل</option>
+                                <option value="ui-ux" data-ar="تصميم UI/UX" data-en="UI/UX Design">تصميم UI/UX</option>
+                                <option value="marketing" data-ar="التسويق الرقمي" data-en="Digital Marketing">التسويق الرقمي</option>
+                                <option value="branding" data-ar="بناء العلامة التجارية" data-en="Branding">بناء العلامة التجارية</option>
+                                <option value="consultation" data-ar="الاستشارة" data-en="Consultation">الاستشارة</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-ar="التاريخ المفضل" data-en="Preferred Date">التاريخ المفضل</label>
+                            <input type="date" name="meetingDate" class="form-input" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-6">
+                        <label class="form-label" data-ar="وصف المشروع" data-en="Project Description">وصف المشروع</label>
+                        <textarea name="projectDescription" class="form-input" rows="5" placeholder="اكتب وصفاً مفصلاً لمشروعك..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn" data-ar="تأكيد الموعد" data-en="Confirm Appointment">تأكيد الموعد</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Impact Section -->
+        <section id="impact" class="py-24 bg-gradient-to-b from-brand-deepBlue/10 to-brand-dark relative z-10 border-t border-white/5">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4 opacity-0 animate-slideUp" style="animation-delay: 0.1s" data-ar="لماذا الدمج هو الموديل الأقوى؟" data-en="Why Integration is the Strongest Model?">لماذا الدمج هو الموديل الأقوى؟</h2>
+                    <p class="text-gray-400 max-w-2xl mx-auto text-lg opacity-0 animate-slideUp" style="animation-delay: 0.2s" data-ar="يستعرض هذا القسم التحليلي تأثير دمج التسويق الرقمي مع الحلول البرمجية (Tech + Marketing). الرسم البياني أدناه يوضح مسار النمو المتوقع للشركات عند استخدام خدمات منفصلة مقابل استخدام منصة متكاملة مثل Maxora." data-en="This analytical section reviews the impact of integrating digital marketing with programming solutions (Tech + Marketing). The chart below shows the expected growth path for companies when using separate services versus using an integrated platform like Maxora.">
+                        يستعرض هذا القسم التحليلي تأثير دمج التسويق الرقمي مع الحلول البرمجية (Tech + Marketing). الرسم البياني أدناه يوضح مسار النمو المتوقع للشركات عند استخدام خدمات منفصلة مقابل استخدام منصة متكاملة مثل Maxora.
+                    </p>
+                </div>
+
+                <div class="glass-panel p-6 md:p-10 rounded-3xl border border-brand-accent/20 opacity-0 animate-slideUp" style="animation-delay: 0.3s">
+                    <div class="flex flex-col lg:flex-row gap-10 items-center">
+                        <div class="w-full lg:w-1/3">
+                            <h3 class="text-2xl font-bold mb-4 text-brand-accent" data-ar="مسار النمو (Growth Trajectory)" data-en="Growth Trajectory">مسار النمو (Growth Trajectory)</h3>
+                            <p class="text-gray-300 mb-6 leading-relaxed" data-ar="تشير البيانات التحليلية لنموذج عملنا أن الاعتماد على التسويق فقط أو التكنولوجيا فقط يولد نمواً خطياً محدوداً. بينما دمج الواجهات التقنية المتميزة (UI/UX & Web Dev) مع حملات تسويقية ذكية (Paid Ads & Content) يولد تأثيراً مضاعفاً ونمواً أسياً (Exponential Growth)." data-en="Analytical data from our business model shows that relying on marketing alone or technology alone generates limited linear growth. While combining outstanding technical interfaces (UI/UX & Web Dev) with smart marketing campaigns (Paid Ads & Content) generates multiplied impact and exponential growth.">
+                                تشير البيانات التحليلية لنموذج عملنا أن الاعتماد على التسويق فقط أو التكنولوجيا فقط يولد نمواً خطياً محدوداً. بينما دمج الواجهات التقنية المتميزة (UI/UX & Web Dev) مع حملات تسويقية ذكية (Paid Ads & Content) يولد <strong class="text-white">تأثيراً مضاعفاً ونمواً أسياً (Exponential Growth)</strong>.
+                            </p>
+                            <ul class="space-y-4 text-sm">
+                                <li class="flex items-center gap-3">
+                                    <div class="w-3 h-3 rounded-full bg-gray-500"></div>
+                                    <span data-ar="برمجيات فقط (بدون ترويج)" data-en="Software Only (No Promotion)">برمجيات فقط (بدون ترويج)</span>
+                                </li>
+                                <li class="flex items-center gap-3">
+                                    <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+                                    <span data-ar="تسويق فقط (بدون منصة قوية)" data-en="Marketing Only (No Strong Platform)">تسويق فقط (بدون منصة قوية)</span>
+                                </li>
+                                <li class="flex items-center gap-3">
+                                    <div class="w-3 h-3 rounded-full bg-brand-accent shadow-[0_0_10px_#38bdf8]"></div>
+                                    <span class="font-bold text-white font-english tracking-wide" data-ar="MAXORA SYNERGY" data-en="MAXORA SYNERGY">MAXORA SYNERGY</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="w-full lg:w-2/3">
+                            <div class="chart-container">
+                                <canvas id="growthChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- WhatsApp Button -->
+        <div class="fixed bottom-8 right-8 z-40">
+            <a href="https://wa.me/201055707007?text=Hello Maxora Team, I'm interested in your digital marketing services. Could you please provide more details?Hello Maxora Team, I'm interested in your digital marketing services. Could you please provide more details?" target="_blank" class="whatsapp-pulse flex items-center justify-center w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full shadow-lg transition-all hover:scale-110" title="WhatsApp">
+                <i class="fab fa-whatsapp text-white text-2xl"></i>
+            </a>
+        </div>
+
+        <!-- Footer -->
+        <footer class="bg-brand-dark border-t border-white/5">
+            <div class="max-w-7xl mx-auto px-4 py-16">
+                <!-- Top Footer Row -->
+                <div class="flex flex-col items-center mb-10">
+                    <img src="MAXORA png white.png" alt="Maxora Logo" class="w-14 h-14 object-contain mb-4 opacity-80 hover:opacity-100 transition-opacity logo-animate" title="Maxora">
+                    <p class="text-white font-english font-bold text-xl tracking-widest mb-1">MAXORA</p>
+                    <p class="text-gray-500 text-sm" data-ar="وكالة النمو الرقمي وحلول التكنولوجيا المتكاملة" data-en="Digital Growth Agency & Integrated Tech Solutions">وكالة النمو الرقمي وحلول التكنولوجيا المتكاملة</p>
+                </div>
+
+                <!-- Social Media Icons - Footer -->
+                <div class="footer-social-row flex justify-center gap-5 mb-10">
+                    <a href="https://facebook.com/" target="_blank" class="footer-social-icon" title="Facebook" aria-label="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                        <span class="footer-social-label">Facebook</span>
+                    </a>
+                    <a href="https://instagram.com/" target="_blank" class="footer-social-icon" title="Instagram" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                        <span class="footer-social-label">Instagram</span>
+                    </a>
+                    <a href="https://tiktok.com/@maxora" target="_blank" class="footer-social-icon" title="TikTok" aria-label="TikTok">
+                        <i class="fab fa-tiktok"></i>
+                        <span class="footer-social-label">TikTok</span>
+                    </a>
+                    <a href="https://linkedin.com/company/" target="_blank" class="footer-social-icon" title="LinkedIn" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                        <span class="footer-social-label">LinkedIn</span>
+                    </a>
+                </div>
+
+                <!-- Divider -->
+                <div class="footer-divider"></div>
+
+                <!-- Copyright -->
+                <p class="text-center text-gray-600 text-sm mt-8">
+                    © <span id="footerYear"></span> MAXORA. 
+                    <span data-ar="جميع الحقوق محفوظة." data-en="All rights reserved.">جميع الحقوق محفوظة.</span>
+                </p>
+            </div>
+        </footer>
+
+    </main>
+
+    <script src="phone.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Footer year
+        document.getElementById('footerYear').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>
