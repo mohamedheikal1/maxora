@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlElement">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maxora — Where Growth Meets Technology</title>
+    <meta name="description" content="Maxora — وكالة النمو الرقمي وحلول التكنولوجيا المتكاملة">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#060c18',
+                            navy: '#0a1628',
+                            blue: '#0057ff',
+                            sky: '#38b6ff',
+                            gold: '#d4af37',
+                            silver: '#e2e8f0'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* ===== CRITICAL PERFORMANCE FIXES ===== */
+        /* Remove scroll-behavior from CSS — Lenis handles it */
+        html { scroll-behavior: auto !important; }
+        
+        /* CRITICAL: Remove transition:all that causes scroll lag */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        /* Only transition specific props, NEVER 'all' on layout elements */
+        body, section, div, nav {
+            transition-property: opacity, color, background-color, border-color, box-shadow !important;
+            transition-duration: 200ms !important;
+            transition-timing-function: ease !important;
+        }
+
+        /* ===== GLOBAL ===== */
+        body {
+            background: #060c18;
+            color: #e2e8f0;
+            font-family: 'Cairo', sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        body.lang-en { font-family: 'Space Grotesk', sans-serif; }
+
+        /* ===== CUSTOM CURSOR ===== */
+        .cursor-dot {
+            width: 8px; height: 8px;
+            background: #d4af37;
+            border-radius: 50%;
+            position: fixed;
+            top: 0; left: 0;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease, opacity 0.3s ease;
+            will-change: transform;
+        }
+        .cursor-ring {
+            width: 36px; height: 36px;
+            border: 1.5px solid rgba(212,175,55,0.6);
+            border-radius: 50%;
+            position: fixed;
+            top: 0; left: 0;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease;
+            will-change: transform;
+        }
+        .cursor-ring.hovered {
+            width: 56px; height: 56px;
+            border-color: #d4af37;
+            background: rgba(212,175,55,0.05);
+        }
+        @media (max-width: 768px) {
+            .cursor-dot, .cursor-ring { display: none; }
+        }
+
+        /* ===== PRELOADER ===== */
+        #preloader {
+            position: fixed; inset: 0; z-index: 1000;
+            background: #020710;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            overflow: hidden;
+        }
+        .pl-line {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%; text-align: center;
+            opacity: 0;
+            will-change: opacity, transform;
+        }
+        .pl-t1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1rem,2vw,1.4rem); letter-spacing: 0.5em; text-transform: uppercase; color: #64748b; }
+        .pl-t2 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(4rem,12vw,9rem); letter-spacing: 0.12em; color: #fff; line-height: 1; }
+        .pl-t2 span { 
+            background: linear-gradient(135deg, #0057ff, #38b6ff, #d4af37);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            filter: drop-shadow(0 0 30px rgba(0,87,255,0.6));
+        }
+        .pl-t3 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(0.9rem,1.8vw,1.2rem); letter-spacing: 0.4em; text-transform: uppercase; color: #94a3b8; }
+        .pl-tagline { font-family: 'Cairo', sans-serif; font-size: clamp(1.2rem,3vw,2rem); color: rgba(255,255,255,0.85); line-height: 1.6; }
+        .pl-tagline em { font-style: normal; color: #d4af37; }
+        #pl-glow {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 0; height: 0;
+            background: radial-gradient(circle, rgba(0,87,255,0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            will-change: width, height, opacity;
+        }
+        .pl-progress {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            height: 2px;
+            background: rgba(255,255,255,0.05);
+        }
+        .pl-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #0057ff, #d4af37);
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        /* ===== NAVBAR ===== */
+        #navbar {
+            position: fixed; top: 0; left: 0; right: 0;
+            z-index: 100;
+            padding: 0 2rem;
+            transition: background 0.4s ease, box-shadow 0.4s ease !important;
+        }
+        #navbar.scrolled {
+            background: rgba(6,12,24,0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 1px 0 rgba(255,255,255,0.05);
+        }
+        .nav-inner {
+            max-width: 1280px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between;
+            height: 72px;
+        }
+        .nav-logo { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .nav-logo img { width: 38px; height: 38px; object-fit: contain; filter: drop-shadow(0 0 12px rgba(0,87,255,0.5)); }
+        .nav-logo span { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.15em; color: #fff; }
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a {
+            font-size: 0.85rem; font-weight: 600; letter-spacing: 0.05em;
+            color: #94a3b8; text-decoration: none; text-transform: uppercase;
+            position: relative; padding-bottom: 2px;
+            transition: color 0.25s ease !important;
+        }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: -2px; left: 0; right: 0;
+            height: 1px; background: #d4af37;
+            transform: scaleX(0); transition: transform 0.25s ease;
+            transform-origin: right;
+        }
+        .nav-links a:hover, .nav-links a.active { color: #fff; }
+        .nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1); transform-origin: left; }
+        .lang-btn {
+            width: 42px; height: 42px; border-radius: 50%;
+            border: 1.5px solid rgba(0,87,255,0.5);
+            background: rgba(0,87,255,0.08);
+            color: #38b6ff; font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s ease !important;
+        }
+        .lang-btn:hover { background: rgba(0,87,255,0.2); border-color: #38b6ff; transform: scale(1.08); }
+        .nav-cta {
+            padding: 10px 22px; border-radius: 8px;
+            background: linear-gradient(135deg, #0057ff, #003dcc);
+            color: #fff; font-size: 0.8rem; font-weight: 700;
+            letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer;
+            border: none; box-shadow: 0 0 20px rgba(0,87,255,0.3);
+            transition: box-shadow 0.25s ease, transform 0.25s ease !important;
+        }
+        .nav-cta:hover { box-shadow: 0 0 35px rgba(0,87,255,0.6); transform: translateY(-1px); }
+        /* mobile nav */
+        .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+        .nav-hamburger span { display: block; width: 24px; height: 2px; background: #fff; border-radius: 2px; transition: all 0.3s ease !important; }
+        .mobile-menu {
+            display: none; position: fixed; inset: 0; z-index: 99;
+            background: rgba(6,12,24,0.97); backdrop-filter: blur(20px);
+            flex-direction: column; align-items: center; justify-content: center; gap: 2rem;
+        }
+        .mobile-menu.open { display: flex; }
+        .mobile-menu a {
+            font-size: 1.5rem; font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.2em;
+            color: #fff; text-decoration: none; text-transform: uppercase;
+            transition: color 0.2s ease !important;
+        }
+        .mobile-menu a:hover { color: #d4af37; }
+        @media (max-width: 768px) {
+            .nav-links, .nav-cta { display: none; }
+            .nav-hamburger { display: flex; }
+        }
+
+        /* ===== GLASS ===== */
+        .glass {
+            background: rgba(10, 22, 40, 0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(56,182,255,0.1);
+        }
+
+        /* ===== TEXT GRADIENT ===== */
+        .text-grad {
+            background: linear-gradient(135deg, #0057ff 0%, #38b6ff 50%, #d4af37 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .text-grad-gold {
+            background: linear-gradient(135deg, #d4af37, #f0d060);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+
+        /* ===== SECTION COMMON ===== */
+        section { position: relative; overflow: hidden; }
+        .section-label {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.72rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+            color: #38b6ff; margin-bottom: 1rem;
+        }
+        .section-label::before {
+            content: ''; width: 20px; height: 1px; background: #38b6ff; display: block;
+        }
+        .section-title {
+            font-size: clamp(2.2rem, 5vw, 3.8rem);
+            font-weight: 800; line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        /* ===== HERO ===== */
+        #hero {
+            min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            padding: 100px 2rem 60px;
+        }
+        .hero-inner { max-width: 900px; margin: 0 auto; text-align: center; position: relative; z-index: 2; }
+        .hero-eyebrow {
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 6px 18px; border-radius: 100px;
+            border: 1px solid rgba(0,87,255,0.3); background: rgba(0,87,255,0.08);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.75rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
+            color: #38b6ff; margin-bottom: 2rem;
+            opacity: 0; transform: translateY(20px);
+            animation: fadeUp 0.8s 0.2s ease forwards;
+        }
+        .hero-eyebrow::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #38b6ff; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
+        .hero-h1 {
+            font-size: clamp(3rem, 9vw, 7.5rem);
+            font-weight: 900; line-height: 1.02;
+            letter-spacing: -0.03em;
+            margin-bottom: 1.5rem;
+            opacity: 0; transform: translateY(30px);
+            animation: fadeUp 1s 0.4s ease forwards;
+        }
+        .hero-sub {
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
+            color: #6b839e; line-height: 1.7; max-width: 600px; margin: 0 auto 2.5rem;
+            opacity: 0; transform: translateY(20px);
+            animation: fadeUp 0.8s 0.7s ease forwards;
+        }
+        .hero-btns {
+            display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;
+            opacity: 0; transform: translateY(20px);
+            animation: fadeUp 0.8s 0.9s ease forwards;
+        }
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+        .btn-primary {
+            padding: 14px 32px; border-radius: 10px;
+            background: linear-gradient(135deg, #0057ff, #003dcc);
+            color: #fff; font-weight: 700; font-size: 0.9rem;
+            letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; border: none;
+            box-shadow: 0 0 30px rgba(0,87,255,0.35);
+            transition: box-shadow 0.25s ease, transform 0.25s ease !important;
+            position: relative; overflow: hidden;
+        }
+        .btn-primary::after { content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0); transition: background 0.2s ease !important; }
+        .btn-primary:hover { box-shadow: 0 0 50px rgba(0,87,255,0.6); transform: translateY(-2px); }
+        .btn-primary:hover::after { background: rgba(255,255,255,0.05); }
+
+        .btn-ghost {
+            padding: 14px 32px; border-radius: 10px;
+            border: 1.5px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.03);
+            color: #e2e8f0; font-weight: 700; font-size: 0.9rem;
+            letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer;
+            transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease !important;
+        }
+        .btn-ghost:hover { border-color: rgba(212,175,55,0.5); background: rgba(212,175,55,0.05); transform: translateY(-2px); }
+
+        /* hero bg canvas */
+        #heroCanvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.5; pointer-events: none; }
+        .hero-glow-1 { position: absolute; top: -10%; left: 10%; width: 40vw; height: 40vw; background: radial-gradient(circle, rgba(0,87,255,0.15) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
+        .hero-glow-2 { position: absolute; bottom: -10%; right: 10%; width: 30vw; height: 30vw; background: radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
+
+        /* ===== MARQUEE ===== */
+        .marquee-wrap { border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 16px 0; overflow: hidden; background: rgba(0,0,0,0.2); }
+        .marquee-track { display: flex; gap: 3rem; width: max-content; animation: marqueeScroll 25s linear infinite; }
+        .marquee-item { display: flex; align-items: center; gap: 10px; font-family: 'Space Grotesk', sans-serif; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: #3d5266; white-space: nowrap; }
+        .marquee-item .dot { width: 4px; height: 4px; border-radius: 50%; background: #d4af37; }
+        @keyframes marqueeScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+        /* ===== STATS ===== */
+        .stats-section { padding: 80px 2rem; }
+        .stats-grid { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; }
+        @media (max-width: 768px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+        .stat-item { text-align: center; padding: 2rem 1rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.06); background: rgba(10,22,40,0.3); }
+        .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem,5vw,3.5rem); letter-spacing: 0.05em; line-height: 1; margin-bottom: 0.5rem; }
+        .stat-label { font-size: 0.78rem; color: #64748b; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+
+        /* ===== SERVICES ===== */
+        .services-section { padding: 100px 2rem; }
+        .services-inner { max-width: 1280px; margin: 0 auto; }
+        .filter-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 2rem; }
+        .filter-tab {
+            padding: 8px 20px; border-radius: 100px; font-size: 0.8rem; font-weight: 600;
+            letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; border: none;
+            background: rgba(255,255,255,0.05); color: #64748b;
+            transition: all 0.25s ease !important;
+        }
+        .filter-tab.active, .filter-tab:hover { background: rgba(0,87,255,0.15); color: #38b6ff; }
+        .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+        @media (max-width: 900px) { .services-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 580px) { .services-grid { grid-template-columns: 1fr; } }
+        .service-card {
+            padding: 2rem; border-radius: 16px;
+            background: rgba(10, 22, 40, 0.5);
+            border: 1px solid rgba(56,182,255,0.08);
+            display: flex; flex-direction: column;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease !important;
+            will-change: transform;
+            cursor: default;
+        }
+        .service-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(0,87,255,0.15); border-color: rgba(0,87,255,0.25); }
+        .service-icon { width: 52px; height: 52px; border-radius: 12px; background: rgba(0,87,255,0.1); border: 1px solid rgba(0,87,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 1.5rem; transition: background 0.25s ease !important; }
+        .service-card:hover .service-icon { background: rgba(0,87,255,0.2); }
+        .service-tag { display: inline-block; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; padding: 3px 10px; border-radius: 100px; margin-top: auto; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.05); }
+        .tag-tech { color: #38b6ff; }
+        .tag-marketing { color: #a78bfa; }
+        .service-h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.75rem; color: #f0f6ff; }
+        .service-p { font-size: 0.87rem; color: #6b839e; line-height: 1.65; }
+
+        /* ===== PROMO ===== */
+        .promo-section { padding: 100px 2rem; }
+        .promo-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+        @media (max-width: 900px) { .promo-inner { grid-template-columns: 1fr; gap: 3rem; } }
+        .promo-checklist { list-style: none; display: flex; flex-direction: column; gap: 0.85rem; margin: 1.5rem 0 2.5rem; }
+        .promo-checklist li { display: flex; align-items: center; gap: 12px; font-size: 0.95rem; color: #94a3b8; }
+        .promo-checklist li::before { content: '✓'; width: 22px; height: 22px; border-radius: 50%; background: rgba(0,87,255,0.15); border: 1px solid rgba(0,87,255,0.3); color: #38b6ff; font-size: 0.75rem; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .stats-card { padding: 2.5rem; border-radius: 20px; border: 1px solid rgba(212,175,55,0.15); background: rgba(10,22,40,0.6); backdrop-filter: blur(12px); }
+        .stats-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .stat-box { text-align: center; padding: 1.5rem; border-radius: 12px; background: rgba(0,87,255,0.05); border: 1px solid rgba(0,87,255,0.1); }
+        .stat-box-num { font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; line-height: 1; margin-bottom: 0.4rem; }
+        .stat-box-label { font-size: 0.72rem; color: #64748b; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+
+        /* ===== VISION ===== */
+        .vision-section { padding: 100px 2rem; }
+        .vision-inner { max-width: 1100px; margin: 0 auto; }
+        .vision-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 3rem; }
+        @media (max-width: 700px) { .vision-cards { grid-template-columns: 1fr; } }
+        .vision-card { padding: 3rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.07); background: rgba(10,22,40,0.4); position: relative; overflow: hidden; }
+        .vision-card::before { content: ''; position: absolute; top: 0; right: 0; width: 100px; height: 100px; border-radius: 50%; opacity: 0.15; pointer-events: none; }
+        .vision-card.blue::before { background: #0057ff; }
+        .vision-card.gold::before { background: #d4af37; }
+        .vision-big { font-family: 'Bebas Neue', sans-serif; font-size: 4rem; letter-spacing: 0.1em; margin-bottom: 0.5rem; line-height: 1; }
+
+        /* ===== IMPACT / CHART ===== */
+        .impact-section { padding: 100px 2rem; }
+        .impact-inner { max-width: 1200px; margin: 0 auto; }
+        .impact-card { padding: 3rem; border-radius: 24px; border: 1px solid rgba(212,175,55,0.12); background: rgba(10,22,40,0.5); backdrop-filter: blur(12px); margin-top: 3rem; }
+        .chart-container { position: relative; width: 100%; height: 380px; }
+        @media (max-width: 768px) { .chart-container { height: 280px; } }
+
+        /* ===== BOOKING ===== */
+        .booking-section { padding: 100px 2rem; }
+        .booking-inner { max-width: 800px; margin: 0 auto; }
+        .booking-card { padding: 3rem; border-radius: 24px; border: 1px solid rgba(212,175,55,0.15); background: rgba(10,22,40,0.6); backdrop-filter: blur(16px); }
+        @media (max-width: 600px) { .booking-card { padding: 2rem 1.5rem; } }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-label { font-size: 0.82rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #38b6ff; }
+        .form-input, .form-select, .form-textarea {
+            padding: 13px 16px; border-radius: 10px;
+            background: rgba(6,12,24,0.8); border: 1.5px solid rgba(255,255,255,0.08);
+            color: #e2e8f0; font-family: inherit; font-size: 0.95rem;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease !important;
+        }
+        .form-input::placeholder, .form-textarea::placeholder { color: #3d5266; }
+        .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: rgba(0,87,255,0.5); box-shadow: 0 0 0 3px rgba(0,87,255,0.08); }
+        .form-select option { background: #060c18; }
+        .form-textarea { resize: vertical; min-height: 120px; }
+        .submit-btn {
+            width: 100%; padding: 16px; border-radius: 10px; border: none;
+            background: linear-gradient(135deg, #d4af37, #b8942e);
+            color: #060c18; font-weight: 800; font-size: 1rem;
+            letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer;
+            box-shadow: 0 0 30px rgba(212,175,55,0.3);
+            transition: box-shadow 0.25s ease, transform 0.25s ease !important;
+        }
+        .submit-btn:hover { box-shadow: 0 0 50px rgba(212,175,55,0.5); transform: translateY(-2px); }
+        .success-msg, .error-msg, .loading-msg {
+            padding: 14px 18px; border-radius: 10px; display: flex; align-items: center;
+            gap: 10px; font-size: 0.9rem; margin-bottom: 1.5rem; display: none;
+        }
+        .success-msg { background: rgba(34,197,94,0.08); border: 1.5px solid rgba(34,197,94,0.4); color: #86efac; }
+        .error-msg { background: rgba(239,68,68,0.08); border: 1.5px solid rgba(239,68,68,0.4); color: #fca5a5; }
+        .loading-msg { background: rgba(59,130,246,0.08); border: 1.5px solid rgba(59,130,246,0.4); color: #93c5fd; }
+        .success-msg.show, .error-msg.show, .loading-msg.show { display: flex; }
+
+        /* ===== CTA SECTION ===== */
+        .cta-section { padding: 120px 2rem; }
+        .cta-inner { max-width: 800px; margin: 0 auto; text-align: center; }
+        .cta-big { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem,10vw,7rem); letter-spacing: 0.05em; line-height: 1; margin-bottom: 1.5rem; }
+
+        /* ===== FOOTER ===== */
+        footer { padding: 60px 2rem 30px; border-top: 1px solid rgba(255,255,255,0.05); }
+        .footer-inner { max-width: 1200px; margin: 0 auto; }
+        .footer-top { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; margin-bottom: 2.5rem; }
+        .footer-logo { display: flex; align-items: center; gap: 10px; }
+        .footer-logo img { width: 36px; height: 36px; object-fit: contain; opacity: 0.7; filter: drop-shadow(0 0 10px rgba(0,87,255,0.3)); }
+        .footer-logo span { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.15em; color: #fff; }
+        .footer-socials { display: flex; gap: 1rem; }
+        .footer-social-icon {
+            width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+            color: #64748b; font-size: 1rem; text-decoration: none;
+            transition: all 0.25s ease !important;
+        }
+        .footer-social-icon:hover { background: rgba(212,175,55,0.1); border-color: rgba(212,175,55,0.3); color: #d4af37; transform: translateY(-3px); }
+        .footer-divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(56,182,255,0.15), transparent); margin: 1.5rem 0; }
+        .footer-copy { text-align: center; font-size: 0.78rem; color: #3d5266; }
+
+        /* ===== WHATSAPP FLOAT — UPGRADED ===== */
+        .wa-float {
+            position: fixed; bottom: 2rem; right: 2rem; z-index: 80;
+            width: 58px; height: 58px; border-radius: 50%;
+            background: linear-gradient(135deg, #25d366, #128c7e);
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; text-decoration: none;
+            box-shadow: 0 4px 24px rgba(37,211,102,0.45), 0 0 0 0 rgba(37,211,102,0.3);
+            animation: waPulse 2.8s ease-in-out infinite;
+            transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+            overflow: visible;
+        }
+        .wa-float svg { flex-shrink: 0; }
+        .wa-float:hover { 
+            transform: scale(1.12) translateY(-2px); 
+            animation: none;
+            box-shadow: 0 8px 35px rgba(37,211,102,0.65);
+        }
+        .wa-tooltip {
+            position: absolute;
+            right: calc(100% + 10px);
+            top: 50%; transform: translateY(-50%);
+            background: rgba(6,12,24,0.95);
+            border: 1px solid rgba(37,211,102,0.3);
+            color: #86efac;
+            font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em;
+            padding: 6px 12px; border-radius: 8px; white-space: nowrap;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.2s ease !important;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .wa-tooltip::after {
+            content: ''; position: absolute;
+            right: -6px; top: 50%; transform: translateY(-50%);
+            border: 5px solid transparent;
+            border-left-color: rgba(6,12,24,0.95);
+            border-right: none;
+        }
+        .wa-float:hover .wa-tooltip { opacity: 1; }
+        html[dir="rtl"] .wa-float { right: auto; left: 2rem; }
+        html[dir="rtl"] .wa-tooltip { right: auto; left: calc(100% + 10px); }
+        html[dir="rtl"] .wa-tooltip::after { right: auto; left: -6px; border-left: none; border-right-color: rgba(6,12,24,0.95); }
+        @keyframes waPulse { 
+            0%,100%{ box-shadow: 0 4px 24px rgba(37,211,102,0.45), 0 0 0 0 rgba(37,211,102,0.25); }
+            50%{ box-shadow: 0 4px 24px rgba(37,211,102,0.45), 0 0 0 14px rgba(37,211,102,0); }
+        }
+        @media (max-width: 480px) {
+            .wa-float { width: 50px; height: 50px; bottom: 1.5rem; right: 1.5rem; }
+            .wa-tooltip { display: none; }
+        }
+
+        /* ===== NAVBAR SOCIAL ICONS ===== */
+        .nav-socials { display: flex; align-items: center; gap: 4px; }
+        .nav-social-icon {
+            width: 30px; height: 30px; border-radius: 7px;
+            display: flex; align-items: center; justify-content: center;
+            color: #4d6680; text-decoration: none;
+            transition: color 0.2s ease, background 0.2s ease, transform 0.2s ease !important;
+        }
+        .nav-social-icon:hover { color: #fff; background: rgba(255,255,255,0.07); transform: translateY(-1px); }
+        .nav-social-icon.soc-wa:hover { color: #25d366; background: rgba(37,211,102,0.08); }
+        .nav-social-icon.soc-ig:hover { color: #e1306c; background: rgba(225,48,108,0.08); }
+        .nav-social-icon.soc-li:hover { color: #0a66c2; background: rgba(10,102,194,0.08); }
+        .nav-divider-v { width: 1px; height: 20px; background: rgba(255,255,255,0.08); margin: 0 4px; }
+        @media (max-width: 900px) { .nav-socials, .nav-divider-v { display: none; } }
+
+        /* ===== FOOTER SOCIAL ICONS — FULL UPGRADE ===== */
+        .footer-tagline { color: #3d5266; font-size: 0.82rem; text-align: center; }
+        .footer-socials {
+            display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center;
+            margin-top: 0.5rem;
+        }
+        .footer-social-icon {
+            width: 48px; height: 48px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.07);
+            color: #4d6680; text-decoration: none;
+            position: relative; overflow: visible;
+            transition: color 0.25s ease, background 0.25s ease, border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease !important;
+        }
+        .footer-social-icon svg { width: 20px; height: 20px; flex-shrink: 0; }
+        .footer-social-icon:hover { transform: translateY(-4px) scale(1.05); }
+
+        /* Per-brand hover colours */
+        .footer-social-icon.soc-wa:hover  { color: #25d366; background: rgba(37,211,102,0.1);  border-color: rgba(37,211,102,0.35);  box-shadow: 0 8px 24px rgba(37,211,102,0.2); }
+        .footer-social-icon.soc-fb:hover  { color: #1877f2; background: rgba(24,119,242,0.1);  border-color: rgba(24,119,242,0.35);  box-shadow: 0 8px 24px rgba(24,119,242,0.2); }
+        .footer-social-icon.soc-ig:hover  { color: #e1306c; background: rgba(225,48,108,0.1);  border-color: rgba(225,48,108,0.35);  box-shadow: 0 8px 24px rgba(225,48,108,0.2); }
+        .footer-social-icon.soc-li:hover  { color: #0a66c2; background: rgba(10,102,194,0.1);  border-color: rgba(10,102,194,0.35);  box-shadow: 0 8px 24px rgba(10,102,194,0.2); }
+        .footer-social-icon.soc-tt:hover  { color: #fff;    background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3);  box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+        .footer-social-icon.soc-em:hover  { color: #d4af37; background: rgba(212,175,55,0.1);  border-color: rgba(212,175,55,0.35);  box-shadow: 0 8px 24px rgba(212,175,55,0.2); }
+
+        /* Tooltip */
+        .soc-tooltip {
+            position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+            background: rgba(6,12,24,0.95); border: 1px solid rgba(255,255,255,0.08);
+            color: #e2e8f0; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.06em;
+            padding: 5px 10px; border-radius: 6px; white-space: nowrap;
+            pointer-events: none; opacity: 0;
+            transition: opacity 0.2s ease !important;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .soc-tooltip::after {
+            content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+            border: 4px solid transparent; border-top-color: rgba(6,12,24,0.95);
+        }
+        .footer-social-icon:hover .soc-tooltip { opacity: 1; }
+
+        /* Footer quick links */
+        .footer-links {
+            display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; justify-content: center;
+            margin-top: 0.5rem;
+        }
+        .footer-links a {
+            font-size: 0.78rem; color: #3d5266; text-decoration: none; font-weight: 500;
+            transition: color 0.2s ease !important;
+        }
+        .footer-links a:hover { color: #94a3b8; }
+        .footer-links-dot { color: #1e2d42; font-size: 0.8rem; }
+
+        /* ===== PHONE PICKER ===== */
+        .phone-input-wrapper { position: relative; display: flex; }
+        .country-selector {
+            display: flex; align-items: center; gap: 6px; padding: 0 12px;
+            background: rgba(6,12,24,0.8); border: 1.5px solid rgba(255,255,255,0.08);
+            border-radius: 10px 0 0 10px; cursor: pointer;
+            min-width: 90px; flex-shrink: 0; user-select: none; position: relative; z-index: 20;
+            transition: border-color 0.2s ease !important;
+        }
+        html[dir="rtl"] .country-selector { border-radius: 0 10px 10px 0; }
+        .country-selector:hover { border-color: rgba(0,87,255,0.4); }
+        .country-code { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 0.82rem; color: #38b6ff; }
+        .country-chevron { font-size: 0.6rem; color: #64748b; transition: transform 0.25s ease !important; }
+        .country-chevron.open { transform: rotate(180deg); }
+        .phone-number-input { border-radius: 0 10px 10px 0 !important; border-left: none !important; flex: 1; min-width: 0; }
+        html[dir="rtl"] .phone-number-input { border-radius: 10px 0 0 10px !important; border-right: none !important; border-left: 1.5px solid rgba(255,255,255,0.08) !important; }
+        .country-dropdown {
+            position: absolute; top: calc(100% + 6px); left: 0; z-index: 200;
+            width: 270px; background: #0a1628; border: 1.5px solid rgba(212,175,55,0.2);
+            border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            display: none; overflow: hidden;
+        }
+        html[dir="rtl"] .country-dropdown { left: auto; right: 0; }
+        .country-dropdown.open { display: block; animation: dropOpen 0.2s ease; }
+        @keyframes dropOpen { from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)} }
+        .country-search-wrapper { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .country-search-input { width: 100%; padding: 8px 12px; background: rgba(6,12,24,0.8); border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; color: #e2e8f0; font-family: 'Cairo', sans-serif; font-size: 0.85rem; outline: none; }
+        .country-list { max-height: 200px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(212,175,55,0.2) transparent; }
+        .country-option { display: flex; align-items: center; gap: 8px; padding: 9px 14px; cursor: pointer; transition: background 0.15s ease !important; }
+        .country-option:hover, .country-option.active { background: rgba(0,87,255,0.1); }
+        .country-option-name { font-size: 0.82rem; color: #94a3b8; flex: 1; }
+        .country-option-dial { font-size: 0.75rem; color: #d4af37; font-family: 'Space Grotesk', sans-serif; font-weight: 600; }
+
+        /* ===== SCROLL ANIMATIONS ===== */
+        .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.7s ease, transform 0.7s ease !important; }
+        .reveal.in-view { opacity: 1; transform: translateY(0); }
+        .reveal-left { opacity: 0; transform: translateX(-40px); transition: opacity 0.7s ease, transform 0.7s ease !important; }
+        .reveal-left.in-view { opacity: 1; transform: translateX(0); }
+        .reveal-right { opacity: 0; transform: translateX(40px); transition: opacity 0.7s ease, transform 0.7s ease !important; }
+        .reveal-right.in-view { opacity: 1; transform: translateX(0); }
+
+        /* ===== SECTION DIVIDER ===== */
+        .section-divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(56,182,255,0.1), transparent); margin: 0 2rem; }
+
+        /* page fade transitions */
+        body.fade-out { opacity: 0; transition: opacity 0.3s ease !important; }
+        body.fade-in { opacity: 1; transition: opacity 0.4s ease !important; }
+
+        /* Lenis smooth scroll helper */
+        html.lenis { height: auto; }
+        .lenis.lenis-smooth { scroll-behavior: auto !important; }
+        .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+        .lenis.lenis-stopped { overflow: hidden; }
+        .lenis.lenis-scrolling iframe { pointer-events: none; }
+
+        /* Spinner keyframe */
+        @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+        .spin-anim { animation: spin 1s linear infinite; display:inline-block; }
+    </style>
+</head>
+<body id="body">
+
+<!-- Custom Cursor -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Preloader -->
+<div id="preloader">
+    <div id="pl-glow"></div>
+    <div class="pl-line pl-t1" id="plT1">This isn't just marketing…</div>
+    <div class="pl-line pl-t2" id="plT2">This is <span>Maxora.</span></div>
+    <div class="pl-line pl-t3" id="plT3">A Different Level.</div>
+    <div class="pl-line pl-tagline" id="plT4">
+        Maxora isn't just an agency…<br>
+        <em>It's where ideas become power.</em><br>
+        It's where brands become leaders.
+    </div>
+    <div class="pl-progress"><div class="pl-progress-bar" id="plBar"></div></div>
+</div>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+    <button onclick="closeMobileMenu()" style="position:absolute;top:2rem;right:2rem;background:none;border:none;color:#fff;font-size:1.5rem;cursor:pointer">✕</button>
+    <a href="#" onclick="scrollToSection('hero');closeMobileMenu()" data-ar="الرئيسية" data-en="Home">الرئيسية</a>
+    <a href="#" onclick="scrollToSection('services');closeMobileMenu()" data-ar="الخدمات" data-en="Services">الخدمات</a>
+    <a href="#" onclick="scrollToSection('vision');closeMobileMenu()" data-ar="رؤيتنا" data-en="Vision">رؤيتنا</a>
+    <a href="#" onclick="scrollToSection('impact');closeMobileMenu()" data-ar="تأثيرنا" data-en="Impact">تأثيرنا</a>
+    <a href="#" onclick="scrollToSection('booking');closeMobileMenu()" data-ar="احجز موعد" data-en="Book Now">احجز موعد</a>
+</div>
+
+<!-- Navbar -->
+<nav id="navbar">
+    <div class="nav-inner">
+        <div class="nav-logo" onclick="scrollToSection('hero')">
+            <img src="MAXORA%20png%20white.png" alt="Maxora">
+            <span>MAXORA</span>
+        </div>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#" onclick="scrollToSection('hero')" data-ar="الرئيسية" data-en="Home">الرئيسية</a></li>
+            <li><a href="#" onclick="scrollToSection('services')" data-ar="الخدمات" data-en="Services">الخدمات</a></li>
+            <li><a href="#" onclick="scrollToSection('vision')" data-ar="رؤيتنا" data-en="Vision">رؤيتنا</a></li>
+            <li><a href="#" onclick="scrollToSection('impact')" data-ar="تأثيرنا" data-en="Impact">تأثيرنا</a></li>
+        </ul>
+        <div style="display:flex;align-items:center;gap:0.75rem">
+
+            <button class="lang-btn" id="langToggle" onclick="toggleLanguage()"><span id="langText">EN</span></button>
+            <button class="nav-cta" onclick="scrollToSection('booking')" data-ar="احجز موعد" data-en="Book Now">احجز موعد</button>
+            <div class="nav-hamburger" id="hamburger" onclick="openMobileMenu()">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<main id="mainContent">
+
+<!-- ===== HERO ===== -->
+<section id="hero">
+    <canvas id="heroCanvas"></canvas>
+    <div class="hero-glow-1"></div>
+    <div class="hero-glow-2"></div>
+    <div class="hero-inner">
+        <div class="hero-eyebrow" data-ar="وكالة النمو الرقمي + حلول تقنية" data-en="Digital Growth Agency + Tech Solutions">Digital Growth Agency + Tech Solutions</div>
+        <h1 class="hero-h1">
+            <span data-ar="حوّل أفكارك" data-en="Turn Ideas">Turn Ideas</span><br>
+            <span class="text-grad" data-ar="إلى نتائج حقيقية" data-en="Into Real Results">Into Real Results</span>
+        </h1>
+        <p class="hero-sub" data-ar="في Maxora، لا نقدم خدمات منفصلة — بل نصنع هويات رقمية متكاملة تدمج قوة البرمجيات مع ذكاء التسويق لأقصى تأثير." data-en="At Maxora, we don't sell services — we build integrated digital identities that fuse software power with marketing intelligence for maximum impact.">
+            At Maxora, we don't sell services — we build integrated digital identities that fuse software power with marketing intelligence for maximum impact.
+        </p>
+        <div class="hero-btns">
+            <button class="btn-primary" onclick="scrollToSection('services')" data-ar="استكشف خدماتنا" data-en="Explore Services">Explore Services</button>
+            <button class="btn-ghost" onclick="scrollToSection('booking')" data-ar="احجز موعدك" data-en="Book a Meeting">Book a Meeting</button>
+        </div>
+    </div>
+</section>
+
+<!-- Marquee -->
+<div class="marquee-wrap">
+    <div class="marquee-track" id="marqueeTrack">
+        <div class="marquee-item"><span class="dot"></span>Digital Marketing</div>
+        <div class="marquee-item"><span class="dot"></span>Web Development</div>
+        <div class="marquee-item"><span class="dot"></span>Mobile Apps</div>
+        <div class="marquee-item"><span class="dot"></span>UI/UX Design</div>
+        <div class="marquee-item"><span class="dot"></span>Brand Identity</div>
+        <div class="marquee-item"><span class="dot"></span>Paid Ads</div>
+        <div class="marquee-item"><span class="dot"></span>Social Media</div>
+        <div class="marquee-item"><span class="dot"></span>Growth Strategy</div>
+        <!-- duplicate for seamless loop -->
+        <div class="marquee-item"><span class="dot"></span>Digital Marketing</div>
+        <div class="marquee-item"><span class="dot"></span>Web Development</div>
+        <div class="marquee-item"><span class="dot"></span>Mobile Apps</div>
+        <div class="marquee-item"><span class="dot"></span>UI/UX Design</div>
+        <div class="marquee-item"><span class="dot"></span>Brand Identity</div>
+        <div class="marquee-item"><span class="dot"></span>Paid Ads</div>
+        <div class="marquee-item"><span class="dot"></span>Social Media</div>
+        <div class="marquee-item"><span class="dot"></span>Growth Strategy</div>
+    </div>
+</div>
+
+<!-- Stats -->
+<section class="stats-section">
+    <div class="stats-grid">
+        <div class="stat-item reveal">
+            <div class="stat-num text-grad-gold" data-count="50" data-suffix="+">0+</div>
+            <div class="stat-label" data-ar="عميل راضٍ" data-en="Happy Clients">Happy Clients</div>
+        </div>
+        <div class="stat-item reveal" style="transition-delay:0.1s">
+            <div class="stat-num text-grad" data-count="95" data-suffix="%">0%</div>
+            <div class="stat-label" data-ar="معدل الرضا" data-en="Satisfaction Rate">Satisfaction Rate</div>
+        </div>
+        <div class="stat-item reveal" style="transition-delay:0.2s">
+            <div class="stat-num text-grad-gold" data-count="3" data-suffix="X">0X</div>
+            <div class="stat-label" data-ar="متوسط نمو العملاء" data-en="Avg Client Growth">Avg Client Growth</div>
+        </div>
+        <div class="stat-item reveal" style="transition-delay:0.3s">
+            <div class="stat-num text-grad" data-count="24" data-suffix="">0</div>
+            <div class="stat-label" data-ar="دعم مستمر" data-en="Support Hours">Support Hours</div>
+        </div>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ===== SERVICES ===== -->
+<section class="services-section" id="services">
+    <div class="services-inner">
+        <div class="reveal">
+            <div class="section-label" data-ar="ما نقدمه" data-en="What We Offer">What We Offer</div>
+            <h2 class="section-title" data-ar="نموذج العمل المتكامل" data-en="Our Integrated Model">Our Integrated Model</h2>
+            <div class="filter-tabs">
+                <button class="filter-tab active" onclick="filterServices('all')" id="btn-all" data-ar="الكل" data-en="All">All</button>
+                <button class="filter-tab" onclick="filterServices('tech')" id="btn-tech" data-ar="التقنية" data-en="Tech Solutions">Tech Solutions</button>
+                <button class="filter-tab" onclick="filterServices('marketing')" id="btn-marketing" data-ar="التسويق" data-en="Growth Marketing">Growth Marketing</button>
+            </div>
+        </div>
+        <div class="services-grid" id="services-grid"></div>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ===== PROMO ===== -->
+<section class="promo-section" id="promo">
+    <div class="promo-inner">
+        <div class="reveal-left">
+            <div class="section-label" data-ar="لماذا Maxora" data-en="Why Maxora">Why Maxora</div>
+            <!-- Promo content containers -->
+            <div id="promo-web" class="promo-content">
+                <h2 class="section-title" data-ar="موقعك الحالي ضعيف؟" data-en="Is Your Website Holding You Back?">Is Your Website<br>Holding You Back?</h2>
+                <ul class="promo-checklist">
+                    <li data-ar="تصميم احترافي وحديث" data-en="Professional & Modern Design">Professional & Modern Design</li>
+                    <li data-ar="أداء سريع جداً — PageSpeed 95+" data-en="Lightning Fast — PageSpeed 95+">Lightning Fast — PageSpeed 95+</li>
+                    <li data-ar="متوافق مع كل الأجهزة" data-en="Fully Responsive on All Devices">Fully Responsive on All Devices</li>
+                    <li data-ar="تحسين SEO عالي المستوى" data-en="SEO Optimized from Day One">SEO Optimized from Day One</li>
+                    <li data-ar="دعم كامل بعد التسليم" data-en="Full Post-Launch Support">Full Post-Launch Support</li>
+                </ul>
+                <div style="display:flex;gap:1rem;flex-wrap:wrap">
+                    <button class="btn-primary" onclick="scrollToSection('booking')" data-ar="احجز موعد" data-en="Book Now">Book Now</button>
+                    <a href="https://wa.me/201055707007" target="_blank" class="btn-ghost" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px">WhatsApp</a>
+                </div>
+            </div>
+            <div id="promo-mobile" class="promo-content" style="display:none">
+                <h2 class="section-title" data-ar="تطبيق موبايل احترافي؟" data-en="Need a Professional App?">Need a Professional App?</h2>
+                <ul class="promo-checklist">
+                    <li data-ar="iOS و Android معاً" data-en="iOS & Android Support">iOS & Android Support</li>
+                    <li data-ar="واجهة سهلة الاستخدام" data-en="Intuitive User Interface">Intuitive User Interface</li>
+                    <li data-ar="تحديثات دورية مجانية" data-en="Free Regular Updates">Free Regular Updates</li>
+                    <li data-ar="تحليلات مفصلة" data-en="Detailed Analytics">Detailed Analytics</li>
+                    <li data-ar="تكامل مع جميع الخدمات" data-en="Full Service Integration">Full Service Integration</li>
+                </ul>
+                <div style="display:flex;gap:1rem;flex-wrap:wrap">
+                    <button class="btn-primary" onclick="scrollToSection('booking')" data-ar="احجز موعد" data-en="Book Now">Book Now</button>
+                    <a href="https://wa.me/201055707007" target="_blank" class="btn-ghost" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px">WhatsApp</a>
+                </div>
+            </div>
+            <div id="promo-ui-ux" class="promo-content" style="display:none">
+                <h2 class="section-title" data-ar="تصميم يبقى في الذاكرة?" data-en="Design That Converts?">Design That Converts?</h2>
+                <ul class="promo-checklist">
+                    <li data-ar="تصميم يعكس هويتك" data-en="Brand Identity Design">Brand Identity Design</li>
+                    <li data-ar="تجربة مستخدم استثنائية" data-en="Exceptional User Experience">Exceptional User Experience</li>
+                    <li data-ar="تحليل سلوك المستخدم" data-en="User Behavior Analysis">User Behavior Analysis</li>
+                    <li data-ar="تصاميم تزيد التحويلات" data-en="Conversion-Focused Design">Conversion-Focused Design</li>
+                    <li data-ar="بروتوتايبات تفاعلية" data-en="Interactive Prototypes">Interactive Prototypes</li>
+                </ul>
+                <div style="display:flex;gap:1rem;flex-wrap:wrap">
+                    <button class="btn-primary" onclick="scrollToSection('booking')" data-ar="احجز موعد" data-en="Book Now">Book Now</button>
+                    <a href="https://wa.me/201055707007" target="_blank" class="btn-ghost" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px">WhatsApp</a>
+                </div>
+            </div>
+            <div id="promo-marketing" class="promo-content" style="display:none">
+                <h2 class="section-title" data-ar="مبيعاتك راكدة؟" data-en="Sales Not Growing?">Sales Not Growing?</h2>
+                <ul class="promo-checklist">
+                    <li data-ar="إعلانات ممولة مستهدفة" data-en="Targeted Paid Ads">Targeted Paid Ads</li>
+                    <li data-ar="محتوى إبداعي يجذب" data-en="Creative Content Creation">Creative Content Creation</li>
+                    <li data-ar="ROI عالي جداً" data-en="Maximum ROI">Maximum ROI</li>
+                    <li data-ar="تقارير شفافة يومية" data-en="Daily Transparent Reports">Daily Transparent Reports</li>
+                    <li data-ar="استراتيجية مخصصة" data-en="Custom Strategy">Custom Strategy</li>
+                </ul>
+                <div style="display:flex;gap:1rem;flex-wrap:wrap">
+                    <button class="btn-primary" onclick="scrollToSection('booking')" data-ar="احجز موعد" data-en="Book Now">Book Now</button>
+                    <a href="https://wa.me/201055707007" target="_blank" class="btn-ghost" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px">WhatsApp</a>
+                </div>
+            </div>
+            <div id="promo-branding" class="promo-content" style="display:none">
+                <h2 class="section-title" data-ar="هويتك ضائعة وسط المنافسين؟" data-en="Lost in Competition?">Lost in Competition?</h2>
+                <ul class="promo-checklist">
+                    <li data-ar="هوية بصرية متكاملة" data-en="Complete Visual Identity">Complete Visual Identity</li>
+                    <li data-ar="شخصية فريدة للعلامة" data-en="Unique Brand Personality">Unique Brand Personality</li>
+                    <li data-ar="تصاميم متسقة في كل القنوات" data-en="Consistent Cross-Channel Design">Consistent Cross-Channel Design</li>
+                    <li data-ar="قصة علامة تحكيها" data-en="Compelling Brand Story">Compelling Brand Story</li>
+                    <li data-ar="معايير الاستخدام الكاملة" data-en="Complete Brand Guidelines">Complete Brand Guidelines</li>
+                </ul>
+                <div style="display:flex;gap:1rem;flex-wrap:wrap">
+                    <button class="btn-primary" onclick="scrollToSection('booking')" data-ar="احجز موعد" data-en="Book Now">Book Now</button>
+                    <a href="https://wa.me/201055707007" target="_blank" class="btn-ghost" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px">WhatsApp</a>
+                </div>
+            </div>
+            <div id="promo-consultation" class="promo-content" style="display:none">
+                <h2 class="section-title" data-ar="محتار في الخطة الصحيحة؟" data-en="Confused About Your Path?">Confused About Your Path?</h2>
+                <ul class="promo-checklist">
+                    <li data-ar="تقييم شامل لوضعك الحالي" data-en="Complete Status Audit">Complete Status Audit</li>
+                    <li data-ar="استراتيجية مخصصة" data-en="Tailored Strategy">Tailored Strategy</li>
+                    <li data-ar="خطة تنفيذ واضحة" data-en="Clear Execution Plan">Clear Execution Plan</li>
+                    <li data-ar="دعم مستمر من الخبراء" data-en="Ongoing Expert Support">Ongoing Expert Support</li>
+                    <li data-ar="نتائج قابلة للقياس" data-en="Measurable Results">Measurable Results</li>
+                </ul>
+                <div style="display:flex;gap:1rem;flex-wrap:wrap">
+                    <button class="btn-primary" onclick="scrollToSection('booking')" data-ar="احجز موعد" data-en="Book Now">Book Now</button>
+                    <a href="https://wa.me/201055707007" target="_blank" class="btn-ghost" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px">WhatsApp</a>
+                </div>
+            </div>
+        </div>
+        <div class="reveal-right">
+            <!-- Stats card -->
+            <div id="stats-web" class="stats-content stats-card">
+                <p class="section-label" style="margin-bottom:1.5rem" data-ar="النتائج" data-en="RESULTS">RESULTS</p>
+                <div class="stats-card-grid">
+                    <div class="stat-box">
+                        <div class="stat-box-num text-grad-gold">3X</div>
+                        <div class="stat-box-label" data-ar="زيادة الزيارات" data-en="Traffic Boost">Traffic Boost</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-num text-grad">95+</div>
+                        <div class="stat-box-label">PageSpeed</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-num text-grad-gold">100%</div>
+                        <div class="stat-box-label" data-ar="متوافق" data-en="Mobile Ready">Mobile Ready</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-num text-grad">#1</div>
+                        <div class="stat-box-label">SEO Rank</div>
+                    </div>
+                </div>
+            </div>
+            <div id="stats-mobile" class="stats-content stats-card" style="display:none">
+                <p class="section-label" style="margin-bottom:1.5rem" data-ar="النتائج" data-en="RESULTS">RESULTS</p>
+                <div class="stats-card-grid">
+                    <div class="stat-box"><div class="stat-box-num text-grad-gold">2</div><div class="stat-box-label" data-ar="منصتان" data-en="Platforms">Platforms</div></div>
+                    <div class="stat-box"><div class="stat-box-num text-grad">∞</div><div class="stat-box-label" data-ar="إمكانيات" data-en="Features">Features</div></div>
+                    <div class="stat-box"><div class="stat-box-num text-grad-gold">24/7</div><div class="stat-box-label" data-ar="متاح دائماً" data-en="Available">Available</div></div>
+                    <div class="stat-box"><div class="stat-box-num text-grad">5★</div><div class="stat-box-label" data-ar="تقييم" data-en="Rating">Rating</div></div>
+                </div>
+            </div>
+            <div id="stats-ui-ux" class="stats-content stats-card" style="display:none">
+                <p class="section-label" style="margin-bottom:1.5rem" data-ar="النتائج" data-en="RESULTS">RESULTS</p>
+                <div class="stats-card-grid">
+                    <div class="stat-box"><div class="stat-box-num text-grad-gold">5X</div><div class="stat-box-label" data-ar="تفاعل أكثر" data-en="Engagement">Engagement</div></div>
+                    <div class="stat-box"><div class="stat-box-num text-grad">40%</div><div class="stat-box-label" data-ar="تحويلات" data-en="Conversions">Conversions</div></div>
+                    <div class="stat-box"><div class="stat-box-num text-grad-gold">🎨</div><div class="stat-box-label" data-ar="تصميم لا ينسى" data-en="Memorable">Memorable</div></div>
+                    <div class="stat-box"><div class="stat-box-num text-grad">UX</div><div class="stat-box-label" data-ar="متخصص" data-en="Expert">Expert</div></div>
+                </div>
+            </div>
+            <div id="stats-marketing" class="stats-content stats-card" style="display:none">
+                <p class="section-label" style="margin-bottom:1.5rem" data-ar="النتائج" data-en="RESULTS">RESULTS</p>
+                <div class="stats-card-grid">
+                    <div class="stat-box"><div class="stat-box-num text-grad-gold">10X</div><div class="stat-box-label">ROI</div></div>
+                    <div class="stat-box"><div class="stat-box-num text-grad">50%</div><div class="stat-box-label" data-ar="توفير" data-en="Cost Save">Cost Save</div></div>
+                    <div class="stat-box"><div class="stat-box-num text-grad-gold">📈</div><div class="stat-box-label" data-ar="نمو مستمر" data-en="Growth">Growth</div></div>
+                    <div class="stat-box"><div class="stat-box-num text-grad">∞</div><div class="stat-box-label" data-ar="إمكانيات" data-en="Reach">Reach</div></div>
+                </div>
+            </div>
+            <div id="stats-branding" class="stats-content stats-card" style="display:none">
+                <p class="section-label" style="margin-bottom:1.5rem" data-ar="النتائج" data-en="RESULTS">RESULTS</p>
+                <div class="stats-card-grid">
+                    <div class="stat-box"><div class="stat-box-num text-grad-gold">1st</div><div class="stat-box-label" data-ar="أول خيار" data-en="Top Choice">Top Choice</div></div>
+                    <div class="stat-box"><div class="stat-box-num text-grad">70%</div><div class="stat-box-label" data-ar="ولاء أعلى" data-en="Loyalty">Loyalty</div></div>
+                    <div class="stat-box"><div class="stat-box-num text-grad-gold">💎</div><div class="stat-box-label" data-ar="هيبة" data-en="Premium">Premium</div></div>
+                    <div class="stat-box"><div class="stat-box-num text-grad">ID</div><div class="stat-box-label" data-ar="هوية فريدة" data-en="Unique">Unique</div></div>
+                </div>
+            </div>
+            <div id="stats-consultation" class="stats-content stats-card" style="display:none">
+                <p class="section-label" style="margin-bottom:1.5rem" data-ar="النتائج" data-en="RESULTS">RESULTS</p>
+                <div class="stats-card-grid">
+                    <div class="stat-box"><div class="stat-box-num text-grad-gold">100%</div><div class="stat-box-label" data-ar="خطة واضحة" data-en="Clear Plan">Clear Plan</div></div>
+                    <div class="stat-box"><div class="stat-box-num text-grad">∞</div><div class="stat-box-label" data-ar="دعم" data-en="Support">Support</div></div>
+                    <div class="stat-box"><div class="stat-box-num text-grad-gold">✓</div><div class="stat-box-label" data-ar="نجاح مضمون" data-en="Guaranteed">Guaranteed</div></div>
+                    <div class="stat-box"><div class="stat-box-num text-grad">PRO</div><div class="stat-box-label" data-ar="متخصص" data-en="Expert">Expert</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ===== VISION ===== -->
+<section class="vision-section" id="vision">
+    <div class="vision-inner">
+        <div class="reveal" style="text-align:center;max-width:600px;margin:0 auto 3rem">
+            <div class="section-label" data-ar="فلسفة الاسم" data-en="Name Philosophy">Name Philosophy</div>
+            <h2 class="section-title" data-ar="لماذا Maxora؟" data-en="Why Maxora?">Why Maxora?</h2>
+        </div>
+        <div class="vision-cards">
+            <div class="vision-card blue reveal-left">
+                <div class="vision-big text-grad">MAX</div>
+                <h3 style="font-size:1.3rem;font-weight:700;margin-bottom:0.75rem" data-ar="أقصى تأثير وقوة" data-en="Maximum Impact & Power">Maximum Impact & Power</h3>
+                <p style="color:#6b839e;line-height:1.7;font-size:0.92rem" data-ar="كلمة تعبر عن الوصول للحد الأقصى. توحي بالـ Power والـ Growth والقدرة على إحداث تغيير جذري وتأثير قوي في السوق الرقمي." data-en="A word expressing reaching the maximum. It suggests Power, Growth, and the ability to create radical change and strong impact in the digital market.">
+                    A word expressing reaching the maximum. It suggests Power, Growth, and the ability to create radical change and strong impact in the digital market.
+                </p>
+            </div>
+            <div class="vision-card gold reveal-right">
+                <div class="vision-big text-grad-gold">ORA</div>
+                <h3 style="font-size:1.3rem;font-weight:700;margin-bottom:0.75rem" data-ar="هالة من الإشراق والتميز" data-en="Aura of Radiance & Excellence">Aura of Radiance & Excellence</h3>
+                <p style="color:#6b839e;line-height:1.7;font-size:0.92rem" data-ar="مأخوذة من Aura (هالة) أو Horizon (أفق). تعطي إيحاءً بالـ Premium Vibe، الإشراق، والنور الذي يميز العلامات التجارية التي نعمل معها." data-en="Derived from Aura or Horizon. It suggests a Premium Vibe, radiance, and the light that sets the brands we work with apart from the competition.">
+                    Derived from Aura or Horizon. It suggests a Premium Vibe, radiance, and the light that sets the brands we work with apart from the competition.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ===== IMPACT ===== -->
+<section class="impact-section" id="impact">
+    <div class="impact-inner">
+        <div class="reveal">
+            <div class="section-label" data-ar="لماذا الدمج؟" data-en="Why Integration?">Why Integration?</div>
+            <h2 class="section-title" data-ar="الموديل الأقوى في السوق" data-en="The Strongest Model in the Market">The Strongest Model<br>in the Market</h2>
+        </div>
+        <div class="impact-card reveal" style="display:flex;flex-wrap:wrap;gap:3rem;align-items:center">
+            <div style="flex:1;min-width:250px">
+                <h3 style="font-size:1.3rem;font-weight:700;margin-bottom:1rem;color:#d4af37" data-ar="مسار النمو" data-en="Growth Trajectory">Growth Trajectory</h3>
+                <p style="color:#6b839e;line-height:1.7;font-size:0.9rem;margin-bottom:1.5rem" data-ar="الاعتماد على التسويق فقط أو التكنولوجيا فقط يولد نمواً محدوداً. الدمج بين الاثنين يولد تأثيراً مضاعفاً ونمواً أسياً." data-en="Relying on marketing alone or technology alone generates limited growth. Combining both creates multiplied impact and exponential growth.">
+                    Relying on marketing alone or technology alone generates limited growth. Combining both creates multiplied impact and exponential growth.
+                </p>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                    <div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:#64748b">
+                        <span style="width:14px;height:2px;background:#64748b;flex-shrink:0;border-radius:1px"></span>
+                        <span data-ar="تكنولوجيا فقط" data-en="Tech Only">Tech Only</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:#64748b">
+                        <span style="width:14px;height:2px;background:#3b82f6;flex-shrink:0;border-radius:1px"></span>
+                        <span data-ar="تسويق فقط" data-en="Marketing Only">Marketing Only</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:#d4af37;font-weight:700">
+                        <span style="width:14px;height:3px;background:#d4af37;flex-shrink:0;border-radius:1px;box-shadow:0 0 6px #d4af37"></span>
+                        <span>MAXORA SYNERGY</span>
+                    </div>
+                </div>
+            </div>
+            <div style="flex:2;min-width:280px">
+                <div class="chart-container">
+                    <canvas id="growthChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ===== BOOKING ===== -->
+<section class="cta-section" style="background:radial-gradient(ellipse at 50% 50%, rgba(0,87,255,0.08) 0%, transparent 70%)">
+    <div class="cta-inner reveal">
+        <p class="section-label" style="justify-content:center" data-ar="جاهز للانطلاق؟" data-en="Ready to Launch?">Ready to Launch?</p>
+        <div class="cta-big">
+            <div class="text-grad" data-ar="Let's Build" data-en="Let's Build">Let's Build</div>
+            <div style="color:#fff" data-ar="Something" data-en="Something">Something</div>
+            <div class="text-grad-gold" data-ar="Powerful." data-en="Powerful.">Powerful.</div>
+        </div>
+        <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+            <button class="btn-primary" onclick="scrollToSection('booking')" data-ar="ابدأ الآن" data-en="Start Now">Start Now</button>
+            <a href="https://wa.me/201055707007" target="_blank" class="btn-ghost" style="text-decoration:none;display:inline-flex;align-items:center">WhatsApp</a>
+        </div>
+    </div>
+</section>
+
+<!-- ===== BOOKING ===== -->
+<section class="booking-section" id="booking">
+    <div class="booking-inner">
+        <div class="reveal" style="text-align:center;margin-bottom:3rem">
+            <div class="section-label" data-ar="ابدأ الرحلة" data-en="Start Your Journey">Start Your Journey</div>
+            <h2 class="section-title" data-ar="احجز موعدك الآن" data-en="Book Your Meeting Now">Book Your Meeting Now</h2>
+            <p style="color:#6b839e;margin-top:1rem;font-size:0.95rem" data-ar="ملأ الاستمارة واختر الخدمة المناسبة. سنتواصل معك قريباً!" data-en="Fill the form and choose your service. We'll get back to you soon!">Fill the form and choose your service. We'll get back to you soon!</p>
+        </div>
+        <div class="booking-card reveal">
+            <div id="successMessage" class="success-msg"><span>✓</span><div><strong data-ar="تم!" data-en="Done!">Done!</strong> <span data-ar="طلبك وصلنا. سنتواصل معك قريباً" data-en="Your request received. We'll contact you shortly.">Your request received. We'll contact you shortly.</span></div></div>
+            <div id="errorMsg" class="error-msg"><span>⚠</span><span id="errorText"></span></div>
+            <div id="loadingMsg" class="loading-msg"><span style="animation:spin 1s linear infinite;display:inline-block">⟳</span><span data-ar="جاري الإرسال..." data-en="Sending...">Sending...</span></div>
+
+            <form id="bookingForm">
+                <div class="form-row" style="margin-bottom:1.5rem">
+                    <div class="form-group">
+                        <label class="form-label" data-ar="الاسم الكامل" data-en="Full Name">Full Name</label>
+                        <input type="text" name="fullName" class="form-input" placeholder="Your name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-ar="البريد الإلكتروني" data-en="Email">Email</label>
+                        <input type="email" name="email" class="form-input" placeholder="email@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-ar="رقم الهاتف" data-en="Phone">Phone</label>
+                        <div class="phone-input-wrapper">
+                            <div class="country-selector" id="countrySelector" onclick="toggleCountryDropdown()">
+                                <span id="selectedFlag">🇪🇬</span>
+                                <span class="country-code" id="selectedCode">+20</span>
+                                <i class="country-chevron" id="countryChevron">▾</i>
+                                <div class="country-dropdown" id="countryDropdown">
+                                    <div class="country-search-wrapper">
+                                        <input type="text" id="countrySearch" class="country-search-input" placeholder="Search..." oninput="filterCountries(this.value)" onclick="event.stopPropagation()">
+                                    </div>
+                                    <div class="country-list" id="countryList"></div>
+                                </div>
+                            </div>
+                            <input type="tel" name="phone" id="phoneInput" class="form-input phone-number-input" placeholder="1234567890" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-ar="اسم الشركة" data-en="Company">Company</label>
+                        <input type="text" name="company" class="form-input" placeholder="Your company" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-ar="الخدمة المطلوبة" data-en="Service">Service</label>
+                        <select name="service" class="form-input form-select" onchange="updatePromoContent(this.value)" required>
+                            <option value="" data-ar="اختر خدمة" data-en="Select Service">Select Service</option>
+                            <option value="web" data-ar="تطوير موقع ويب" data-en="Web Development">Web Development</option>
+                            <option value="mobile" data-ar="تطبيق موبايل" data-en="Mobile App">Mobile App</option>
+                            <option value="ui-ux" data-ar="تصميم UI/UX" data-en="UI/UX Design">UI/UX Design</option>
+                            <option value="marketing" data-ar="التسويق الرقمي" data-en="Digital Marketing">Digital Marketing</option>
+                            <option value="branding" data-ar="بناء العلامة التجارية" data-en="Branding">Branding</option>
+                            <option value="consultation" data-ar="استشارة" data-en="Consultation">Consultation</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-ar="التاريخ المفضل" data-en="Preferred Date">Preferred Date</label>
+                        <input type="date" name="meetingDate" class="form-input" required>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom:1.5rem">
+                    <label class="form-label" data-ar="وصف المشروع" data-en="Project Description">Project Description</label>
+                    <textarea name="projectDescription" class="form-input form-textarea" placeholder="Tell us about your project..." required></textarea>
+                </div>
+                <button type="submit" class="submit-btn" data-ar="تأكيد الموعد ✦" data-en="Confirm Appointment ✦">Confirm Appointment ✦</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-inner">
+        <!-- Footer Brand Row -->
+        <div class="footer-top">
+            <div class="footer-logo">
+                <img src="MAXORA%20png%20white.png" alt="Maxora">
+                <span>MAXORA</span>
+            </div>
+            <p class="footer-tagline" data-ar="وكالة النمو الرقمي وحلول التكنولوجيا المتكاملة" data-en="Digital Growth Agency & Integrated Tech Solutions">Digital Growth Agency & Integrated Tech Solutions</p>
+
+            <!-- Social Icons Row -->
+            <div class="footer-socials">
+
+                <!-- WhatsApp -->
+                <a href="https://wa.me/201055707007?text=Hello%20Maxora%20Team%2C%20I%27m%20interested%20in%20your%20services." target="_blank" class="footer-social-icon soc-wa" title="WhatsApp" aria-label="WhatsApp">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    <span class="soc-tooltip">WhatsApp</span>
+                </a>
+
+                <!-- Facebook -->
+                <a href="https://www.facebook.com/profile.php?id=100063969423266" target="_blank" rel="noopener noreferrer" class="footer-social-icon soc-fb" title="Facebook" aria-label="Facebook">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    <span class="soc-tooltip">Facebook</span>
+                </a>
+
+                <!-- Instagram -->
+                <a href="https://instagram.com/" target="_blank" class="footer-social-icon soc-ig" title="Instagram" aria-label="Instagram">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                    <span class="soc-tooltip">Instagram</span>
+                </a>
+
+                <!-- LinkedIn -->
+                <a href="https://linkedin.com/company/" target="_blank" class="footer-social-icon soc-li" title="LinkedIn" aria-label="LinkedIn">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                    <span class="soc-tooltip">LinkedIn</span>
+                </a>
+
+                <!-- TikTok -->
+                <a href="https://tiktok.com/@maxora" target="_blank" class="footer-social-icon soc-tt" title="TikTok" aria-label="TikTok">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+                    <span class="soc-tooltip">TikTok</span>
+                </a>
+
+                <!-- Email -->
+                <a href="mailto:maxora.agency@gmail.com" class="footer-social-icon soc-em" title="Send us an email" aria-label="Send us an email">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                    <span class="soc-tooltip">Send us an email</span>
+                </a>
+
+            </div><!-- /footer-socials -->
+
+            <!-- Quick Links -->
+            <nav class="footer-links" aria-label="Footer navigation">
+                <a href="#" onclick="scrollToSection('services')" data-ar="الخدمات" data-en="Services">Services</a>
+                <span class="footer-links-dot">·</span>
+                <a href="#" onclick="scrollToSection('vision')" data-ar="رؤيتنا" data-en="Vision">Vision</a>
+                <span class="footer-links-dot">·</span>
+                <a href="#" onclick="scrollToSection('impact')" data-ar="تأثيرنا" data-en="Impact">Impact</a>
+                <span class="footer-links-dot">·</span>
+                <a href="#" onclick="scrollToSection('booking')" data-ar="احجز موعد" data-en="Book Meeting">Book Meeting</a>
+            </nav>
+
+        </div><!-- /footer-top -->
+
+        <div class="footer-divider"></div>
+        <p class="footer-copy">© <span id="footerYear"></span> MAXORA. <span data-ar="جميع الحقوق محفوظة." data-en="All rights reserved.">All rights reserved.</span> <span style="color:#d4af37">— Where Growth Meets Technology</span></p>
+    </div>
+</footer>
+
+</main>
+
+<!-- WhatsApp Float -->
+<a href="https://wa.me/201055707007?text=Hello%20Maxora%20Team%2C%20I%27m%20interested%20in%20your%20services." target="_blank" class="wa-float" aria-label="Chat on WhatsApp">
+    <svg viewBox="0 0 24 24" fill="currentColor" width="26" height="26"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    <span class="wa-tooltip" data-ar="تحدث معنا" data-en="Chat with us">Chat with us</span>
+</a>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" defer></script>
+
+<script src="phone.js"></script>
+<script src="script.js"></script>
+
+<script>
+// ===== FOOTER YEAR =====
+document.getElementById('footerYear').textContent = new Date().getFullYear();
+
+// ===== CUSTOM CURSOR =====
+const cursorDot = document.getElementById('cursorDot');
+const cursorRing = document.getElementById('cursorRing');
+if (window.innerWidth > 768) {
+    let ringX = 0, ringY = 0;
+    let curX = 0, curY = 0;
+    document.addEventListener('mousemove', e => {
+        curX = e.clientX; curY = e.clientY;
+        cursorDot.style.left = curX + 'px';
+        cursorDot.style.top = curY + 'px';
+    });
+    function animateRing() {
+        ringX += (curX - ringX) * 0.12;
+        ringY += (curY - ringY) * 0.12;
+        cursorRing.style.left = ringX + 'px';
+        cursorRing.style.top = ringY + 'px';
+        requestAnimationFrame(animateRing);
+    }
+    animateRing();
+    document.querySelectorAll('a, button, .service-card, .stat-item').forEach(el => {
+        el.addEventListener('mouseenter', () => cursorRing.classList.add('hovered'));
+        el.addEventListener('mouseleave', () => cursorRing.classList.remove('hovered'));
+    });
+}
+
+// ===== HERO CANVAS PARTICLES =====
+(function() {
+    const canvas = document.getElementById('heroCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let W, H, particles = [];
+    function resize() {
+        W = canvas.width = canvas.offsetWidth;
+        H = canvas.height = canvas.offsetHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+    for (let i = 0; i < 60; i++) {
+        particles.push({
+            x: Math.random() * 1000, y: Math.random() * 800,
+            r: Math.random() * 1.5 + 0.3,
+            vx: (Math.random() - 0.5) * 0.3,
+            vy: (Math.random() - 0.5) * 0.3,
+            a: Math.random() * 0.6 + 0.1
+        });
+    }
+    function draw() {
+        ctx.clearRect(0, 0, W, H);
+        particles.forEach(p => {
+            p.x += p.vx; p.y += p.vy;
+            if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+            if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+            ctx.beginPath();
+            ctx.arc(p.x % W, p.y % H, p.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(56,182,255,${p.a})`;
+            ctx.fill();
+        });
+        // draw connections
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                if (dist < 120) {
+                    ctx.beginPath();
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.strokeStyle = `rgba(0,87,255,${0.08 * (1 - dist/120)})`;
+                    ctx.lineWidth = 0.5;
+                    ctx.stroke();
+                }
+            }
+        }
+        requestAnimationFrame(draw);
+    }
+    draw();
+})();
+
+// ===== LENIS SMOOTH SCROLL (Optimized) =====
+let lenis;
+document.addEventListener('DOMContentLoaded', () => {
+    // Remove CSS scroll-behavior interference
+    document.documentElement.style.scrollBehavior = 'auto';
+
+    lenis = new Lenis({
+        duration: 1.1,
+        easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smooth: true,
+        mouseMultiplier: 0.9,
+        smoothTouch: false,
+        touchMultiplier: 1.5,
+        infinite: false,
+        syncTouch: false,
+    });
+
+    function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+    requestAnimationFrame(raf);
+
+    // ===== PRELOADER =====
+    lenis.stop();
+    document.body.style.overflow = 'hidden';
+
+    const plBar = document.getElementById('plBar');
+    let progress = 0;
+    const progressInterval = setInterval(() => {
+        progress = Math.min(progress + Math.random() * 8, 95);
+        plBar.style.width = progress + '%';
+    }, 120);
+
+    const tl = gsap.timeline({
+        onComplete: () => {
+            clearInterval(progressInterval);
+            plBar.style.width = '100%';
+            setTimeout(() => {
+                gsap.to('#preloader', { opacity: 0, duration: 0.6, ease: 'power2.inOut', onComplete: () => {
+                    document.getElementById('preloader').style.display = 'none';
+                    document.body.style.overflow = '';
+                    lenis.start();
+                    // hero entrance
+                    gsap.fromTo('.hero-h1', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: 'power3.out' });
+                    gsap.fromTo('.hero-sub', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, delay: 0.3, ease: 'power3.out' });
+                    gsap.fromTo('.hero-btns', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, delay: 0.5, ease: 'power3.out' });
+                }});
+            }, 200);
+        }
+    });
+
+    tl.set(['#plT1','#plT2','#plT3','#plT4'], { opacity: 0, y: 20 })
+      .to('#plT1', { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out', delay: 0.4 })
+      .to('#plT1', { opacity: 0, y: -15, duration: 0.5, ease: 'power2.in', delay: 1 })
+      .to('#pl-glow', { width: '50vw', height: '50vw', opacity: 1, duration: 1.5, ease: 'power2.out' }, '-=0.3')
+      .to('#plT2', { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' }, '-=1.2')
+      .to('#plT2', { opacity: 0, y: -15, duration: 0.6, ease: 'power2.in', delay: 1.4 })
+      .to('#plT3', { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.3')
+      .to('#plT3', { opacity: 0, y: -15, duration: 0.5, ease: 'power2.in', delay: 0.9 })
+      .to('#plT4', { opacity: 1, y: 0, duration: 0.9, ease: 'power2.out' }, '-=0.2')
+      .to('#plT4', { opacity: 0, y: -15, duration: 0.6, ease: 'power2.in', delay: 1.5 })
+      .to('#pl-glow', { opacity: 0, duration: 0.8 }, '-=0.3');
+});
+
+// ===== SCROLL REVEAL (IntersectionObserver — no GSAP/ScrollTrigger overhead on scroll) =====
+const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+        if (e.isIntersecting) {
+            e.target.classList.add('in-view');
+            revealObserver.unobserve(e.target);
+        }
+    });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+function initReveal() {
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => revealObserver.observe(el));
+}
+
+// ===== COUNTER ANIMATION =====
+function animateCounters() {
+    document.querySelectorAll('[data-count]').forEach(el => {
+        const target = parseInt(el.dataset.count);
+        const suffix = el.dataset.suffix || '';
+        let current = 0;
+        const duration = 1500;
+        const step = target / (duration / 16);
+        const timer = setInterval(() => {
+            current = Math.min(current + step, target);
+            el.textContent = Math.floor(current) + suffix;
+            if (current >= target) clearInterval(timer);
+        }, 16);
+    });
+}
+
+const counterObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { animateCounters(); counterObserver.disconnect(); }});
+}, { threshold: 0.3 });
+
+// ===== NAVBAR SCROLL =====
+window.addEventListener('scroll', () => {
+    const nav = document.getElementById('navbar');
+    if (window.scrollY > 30) nav.classList.add('scrolled');
+    else nav.classList.remove('scrolled');
+    // active nav link
+    const sections = ['hero', 'services', 'vision', 'impact', 'booking'];
+    let current = 'hero';
+    sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && window.scrollY >= el.offsetTop - 120) current = id;
+    });
+    document.querySelectorAll('.nav-links a').forEach(a => {
+        a.classList.remove('active');
+        if (a.getAttribute('onclick') && a.getAttribute('onclick').includes(current)) a.classList.add('active');
+    });
+}, { passive: true });
+
+// ===== SCROLL TO SECTION =====
+window.scrollToSection = function(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (lenis) {
+        lenis.scrollTo(el, { offset: -72, duration: 1.2 });
+    } else {
+        el.scrollIntoView({ behavior: 'smooth' });
+    }
+};
+
+// ===== MOBILE MENU =====
+window.openMobileMenu = () => document.getElementById('mobileMenu').classList.add('open');
+window.closeMobileMenu = () => document.getElementById('mobileMenu').classList.remove('open');
+
+// initReveal and counterObserver are called from script.js DOMContentLoaded
+
+</script>
+</body>
+</html>
