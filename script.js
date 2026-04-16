@@ -3,11 +3,29 @@
 // Theme: strictly Dark Mode
 localStorage.setItem('maxora-theme', 'dark');
 
+// ===== VERCEL ANALYTICS — CUSTOM EVENTS =====
+// Safe wrapper: fires only when Vercel's script is loaded (window.va)
+function trackEvent(eventName, props) {
+    try {
+        if (typeof window.va === 'function') {
+            window.va('event', Object.assign({ name: eventName }, props || {}));
+        }
+    } catch(err) {
+        console.warn('[Maxora Analytics] trackEvent failed:', err);
+    }
+}
+
+
+// Theme: strictly Dark Mode
+localStorage.setItem('maxora-theme', 'dark');
+
 // ===== LANGUAGE SYSTEM =====
 
 let currentLang = localStorage.getItem('language') || 'ar';
 
 function toggleLanguage() {
+    // Track language switch
+    trackEvent("language_switch", { from: currentLang, to: currentLang === "ar" ? "en" : "ar" });
     const newLang = currentLang === 'ar' ? 'en' : 'ar';
     const btn = document.getElementById('langToggle');
     if (btn) btn.classList.add('flip');
@@ -82,6 +100,8 @@ function renderServices(filter = 'all') {
 }
 
 function filterServices(category) {
+    // Track service filter click
+    trackEvent("service_filter", { category: category });
     document.querySelectorAll('.filter-tab').forEach(btn => btn.classList.remove('active'));
     const activeBtn = document.getElementById('btn-' + category);
     if (activeBtn) activeBtn.classList.add('active');
@@ -101,9 +121,11 @@ async function handleBookingSubmit(e) {
     const projectDescription = document.querySelector('textarea[name="projectDescription"]')?.value.trim() || '';
 
     if (!fullName || !email || !phone || !company || !service || !meetingDate || !projectDescription) {
+        trackEvent('booking_validation_error', { reason: 'missing_fields' });
         showFormError(currentLang === 'ar' ? '⚠️ يرجى ملء جميع الحقول!' : '⚠️ Please fill all fields!'); return;
     }
     if (!validateEmail(email)) {
+        trackEvent('booking_validation_error', { reason: 'invalid_email' });
         showFormError(currentLang === 'ar' ? '⚠️ يرجى إدخال بريد إلكتروني صحيح!' : '⚠️ Please enter a valid email!'); return;
     }
 
@@ -119,12 +141,16 @@ async function handleBookingSubmit(e) {
     showFormLoading(true);
     try { await sendEmailViaFormspree(bookingData); } catch(err) { console.warn('Email err:', err); }
     sendToWhatsApp(bookingData);
+    // Track successful booking submission
+    trackEvent('booking_submitted', { service: bookingData.service, bookingId: bookingData.bookingId });
     showFormLoading(false);
     showFormSuccess();
     document.getElementById('bookingForm').reset();
 }
 
 function sendToWhatsApp(data) {
+    // Track WhatsApp CTA click
+    trackEvent('whatsapp_cta_click', { service: data.service });
     const labels = { web:'Web Development', mobile:'Mobile App Development', 'ui-ux':'UI/UX Design', marketing:'Digital Marketing', branding:'Branding & Identity', consultation:'Business Consultation' };
     const msg = `Hello Maxora Team, I'm interested in your services.\n\nName: ${data.fullName}\nEmail: ${data.email}\nPhone: ${data.phone}\nCompany: ${data.company}\nService: ${labels[data.service]||data.service}\nDate: ${data.meetingDate}\nDetails: ${data.projectDescription}`;
     window.open('https://wa.me/201055707007?text=' + encodeURIComponent(msg), '_blank');
@@ -159,6 +185,8 @@ function generateBookingId() { return 'BK-' + Date.now().toString(36).toUpperCas
 // ===== PROMO =====
 
 function updatePromoContent(service) {
+    // Track which service promo the user browses
+    trackEvent('promo_tab_view', { service: service });
     document.querySelectorAll('.promo-content').forEach(el => el.style.display = 'none');
     document.querySelectorAll('.stats-content').forEach(el => el.style.display = 'none');
     const p = document.getElementById('promo-' + service);
