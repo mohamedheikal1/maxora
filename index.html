@@ -1299,7 +1299,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearInterval(progressInterval);
                 plBar.style.width = '100%';
                 setTimeout(() => {
-                    gsap.to('#preloader', { opacity: 0, duration: 0.6, ease: 'power2.inOut', onComplete: () => {
+                    gsap.to('#preloader', { opacity: 0, duration: 0.3, ease: 'power2.inOut', onComplete: () => {
                         document.getElementById('preloader').style.display = 'none';
                         document.body.style.overflow = '';
                         if (lenis) lenis.start();
@@ -1310,23 +1310,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 200);
             }
         });
-        tl.set(['#plT1','#plT2','#plT3','#plT4'], { opacity: 0, y: 20 })
-          .to('#plT1', { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out', delay: 0.4 })
-          .to('#plT1', { opacity: 0, y: -15, duration: 0.5, ease: 'power2.in', delay: 1 })
-          .to('#pl-glow', { width: '50vw', height: '50vw', opacity: 1, duration: 1.5, ease: 'power2.out' }, '-=0.3')
-          .to('#plT2', { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' }, '-=1.2')
-          .to('#plT2', { opacity: 0, y: -15, duration: 0.6, ease: 'power2.in', delay: 1.4 })
-          .to('#plT3', { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.3')
-          .to('#plT3', { opacity: 0, y: -15, duration: 0.5, ease: 'power2.in', delay: 0.9 })
-          .to('#plT4', { opacity: 1, y: 0, duration: 0.9, ease: 'power2.out' }, '-=0.2')
-          .to('#plT4', { opacity: 0, y: -15, duration: 0.6, ease: 'power2.in', delay: 1.5 })
-          .to('#pl-glow', { opacity: 0, duration: 0.8 }, '-=0.3');
+        // PERF FIX: Preloader مقلّل من ~7s لـ 1.5s لتحسين LCP على موبايل
+        tl.set(['#plT1','#plT2','#plT3','#plT4'], { opacity: 0, y: 15 })
+          .to('#pl-glow', { width: '40vw', height: '40vw', opacity: 1, duration: 0.6, ease: 'power2.out' })
+          .to('#plT2', { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, '-=0.4')
+          .to('#plT2', { opacity: 0, y: -10, duration: 0.3, ease: 'power2.in', delay: 0.4 })
+          .to('#pl-glow', { opacity: 0, duration: 0.3 }, '-=0.2');
     } else {
         setTimeout(() => {
             document.getElementById('preloader').style.display = 'none';
             document.body.style.overflow = '';
             if (lenis) lenis.start();
-        }, 2500);
+        }, 1500);
     }
 });
 
