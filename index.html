@@ -6,49 +6,64 @@
     <title>Maxora — Where Growth Meets Technology</title>
     <meta name="description" content="Maxora — وكالة النمو الرقمي وحلول التكنولوجيا المتكاملة">
 
+    <!-- ===== PERFORMANCE FIX: Fonts via preload (non-blocking) ===== -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preload" as="style"
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Bebas+Neue&family=Space+Grotesk:wght@400;600;700&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Bebas+Neue&family=Space+Grotesk:wght@400;600;700&display=swap">
+    </noscript>
+
     <!-- ===== VERCEL SPEED INSIGHTS ===== -->
     <script>
     window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
     </script>
     <script defer src="/_vercel/speed-insights/script.js"></script>
-        <!-- ===== VERCEL WEB ANALYTICS ===== -->
+
+    <!-- ===== VERCEL WEB ANALYTICS ===== -->
     <script defer src="/_vercel/insights/script.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- ===== PERFORMANCE FIX: Tailwind & Chart.js deferred ===== -->
+    <script src="https://cdn.tailwindcss.com" defer></script>
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            dark: '#060c18',
-                            navy: '#0a1628',
-                            blue: '#0057ff',
-                            sky: '#38b6ff',
-                            gold: '#d4af37',
-                            silver: '#e2e8f0'
+        // Tailwind config must run after tailwind loads
+        window.addEventListener('load', function() {
+            if (window.tailwind) {
+                tailwind.config = {
+                    theme: {
+                        extend: {
+                            colors: {
+                                brand: {
+                                    dark: '#060c18',
+                                    navy: '#0a1628',
+                                    blue: '#0057ff',
+                                    sky: '#38b6ff',
+                                    gold: '#d4af37',
+                                    silver: '#e2e8f0'
+                                }
+                            }
                         }
                     }
                 }
             }
-        }
+        });
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
     <link rel="stylesheet" href="styles.css">
+
     <style>
         /* ===== CRITICAL PERFORMANCE FIXES ===== */
-        /* Remove scroll-behavior from CSS — Lenis handles it */
-        html { scroll-behavior: auto! important; }
-        
-        /* CRITICAL: Remove transition:all that causes scroll lag */
+        html { scroll-behavior: auto !important; }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
-        /* Only transition specific props, NEVER 'all' on layout elements */
+
+        /* PERFORMANCE FIX: Only transition specific props, NEVER 'all' */
         body, section, div, nav {
             transition-property: opacity, color, background-color, border-color, box-shadow !important;
             transition-duration: 200ms !important;
@@ -117,7 +132,7 @@
         }
         .pl-t1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1rem,2vw,1.4rem); letter-spacing: 0.5em; text-transform: uppercase; color: #64748b; }
         .pl-t2 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(4rem,12vw,9rem); letter-spacing: 0.12em; color: #fff; line-height: 1; }
-        .pl-t2 span { 
+        .pl-t2 span {
             background: linear-gradient(135deg, #0057ff, #38b6ff, #d4af37);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
             filter: drop-shadow(0 0 30px rgba(0,87,255,0.6));
@@ -165,7 +180,16 @@
             height: 72px;
         }
         .nav-logo { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        .nav-logo img { width: 38px; height: 38px; object-fit: contain; filter: drop-shadow(0 0 12px rgba(0,87,255,0.5)); }
+
+        /* ===== PERFORMANCE FIX: CLS — explicit dimensions on logo images ===== */
+        .nav-logo img {
+            width: 38px;
+            height: 38px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 12px rgba(0,87,255,0.5));
+            /* Prevent layout shift */
+            flex-shrink: 0;
+        }
         .nav-logo span { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.15em; color: #fff; }
         .nav-links { display: flex; gap: 2rem; list-style: none; }
         .nav-links a {
@@ -201,7 +225,6 @@
             transition: box-shadow 0.25s ease, transform 0.25s ease !important;
         }
         .nav-cta:hover { box-shadow: 0 0 35px rgba(0,87,255,0.6); transform: translateY(-1px); }
-        /* mobile nav */
         .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
         .nav-hamburger span { display: block; width: 24px; height: 2px; background: #fff; border-radius: 2px; transition: all 0.3s ease !important; }
         .mobile-menu {
@@ -449,7 +472,16 @@
         .footer-inner { max-width: 1200px; margin: 0 auto; }
         .footer-top { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; margin-bottom: 2.5rem; }
         .footer-logo { display: flex; align-items: center; gap: 10px; }
-        .footer-logo img { width: 36px; height: 36px; object-fit: contain; opacity: 0.7; filter: drop-shadow(0 0 10px rgba(0,87,255,0.3)); }
+
+        /* ===== PERFORMANCE FIX: CLS — explicit dimensions on footer logo ===== */
+        .footer-logo img {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+            opacity: 0.7;
+            filter: drop-shadow(0 0 10px rgba(0,87,255,0.3));
+            flex-shrink: 0;
+        }
         .footer-logo span { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.15em; color: #fff; }
         .footer-socials { display: flex; gap: 1rem; }
         .footer-social-icon {
@@ -462,7 +494,7 @@
         .footer-divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(56,182,255,0.15), transparent); margin: 1.5rem 0; }
         .footer-copy { text-align: center; font-size: 0.78rem; color: #3d5266; }
 
-        /* ===== WHATSAPP FLOAT — UPGRADED ===== */
+        /* ===== WHATSAPP FLOAT ===== */
         .wa-float {
             position: fixed; bottom: 2rem; right: 2rem; z-index: 80;
             width: 58px; height: 58px; border-radius: 50%;
@@ -475,8 +507,8 @@
             overflow: visible;
         }
         .wa-float svg { flex-shrink: 0; }
-        .wa-float:hover { 
-            transform: scale(1.12) translateY(-2px); 
+        .wa-float:hover {
+            transform: scale(1.12) translateY(-2px);
             animation: none;
             box-shadow: 0 8px 35px rgba(37,211,102,0.65);
         }
@@ -504,7 +536,7 @@
         html[dir="rtl"] .wa-float { right: auto; left: 2rem; }
         html[dir="rtl"] .wa-tooltip { right: auto; left: calc(100% + 10px); }
         html[dir="rtl"] .wa-tooltip::after { right: auto; left: -6px; border-left: none; border-right-color: rgba(6,12,24,0.95); }
-        @keyframes waPulse { 
+        @keyframes waPulse {
             0%,100%{ box-shadow: 0 4px 24px rgba(37,211,102,0.45), 0 0 0 0 rgba(37,211,102,0.25); }
             50%{ box-shadow: 0 4px 24px rgba(37,211,102,0.45), 0 0 0 14px rgba(37,211,102,0); }
         }
@@ -528,7 +560,7 @@
         .nav-divider-v { width: 1px; height: 20px; background: rgba(255,255,255,0.08); margin: 0 4px; }
         @media (max-width: 900px) { .nav-socials, .nav-divider-v { display: none; } }
 
-        /* ===== FOOTER SOCIAL ICONS — FULL UPGRADE ===== */
+        /* ===== FOOTER SOCIAL ICONS ===== */
         .footer-tagline { color: #3d5266; font-size: 0.82rem; text-align: center; }
         .footer-socials {
             display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center;
@@ -546,7 +578,6 @@
         .footer-social-icon svg { width: 20px; height: 20px; flex-shrink: 0; }
         .footer-social-icon:hover { transform: translateY(-4px) scale(1.05); }
 
-        /* Per-brand hover colours */
         .footer-social-icon.soc-wa:hover  { color: #25d366; background: rgba(37,211,102,0.1);  border-color: rgba(37,211,102,0.35);  box-shadow: 0 8px 24px rgba(37,211,102,0.2); }
         .footer-social-icon.soc-fb:hover  { color: #1877f2; background: rgba(24,119,242,0.1);  border-color: rgba(24,119,242,0.35);  box-shadow: 0 8px 24px rgba(24,119,242,0.2); }
         .footer-social-icon.soc-ig:hover  { color: #e1306c; background: rgba(225,48,108,0.1);  border-color: rgba(225,48,108,0.35);  box-shadow: 0 8px 24px rgba(225,48,108,0.2); }
@@ -554,7 +585,6 @@
         .footer-social-icon.soc-tt:hover  { color: #fff;    background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3);  box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
         .footer-social-icon.soc-em:hover  { color: #d4af37; background: rgba(212,175,55,0.1);  border-color: rgba(212,175,55,0.35);  box-shadow: 0 8px 24px rgba(212,175,55,0.2); }
 
-        /* Tooltip */
         .soc-tooltip {
             position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
             background: rgba(6,12,24,0.95); border: 1px solid rgba(255,255,255,0.08);
@@ -570,7 +600,6 @@
         }
         .footer-social-icon:hover .soc-tooltip { opacity: 1; }
 
-        /* Footer quick links */
         .footer-links {
             display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; justify-content: center;
             margin-top: 0.5rem;
@@ -626,18 +655,15 @@
         /* ===== SECTION DIVIDER ===== */
         .section-divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(56,182,255,0.1), transparent); margin: 0 2rem; }
 
-        /* page fade transitions */
         body.fade-out { opacity: 0; transition: opacity 0.3s ease !important; }
         body.fade-in { opacity: 1; transition: opacity 0.4s ease !important; }
 
-        /* Lenis smooth scroll helper */
         html.lenis { height: auto; }
         .lenis.lenis-smooth { scroll-behavior: auto !important; }
         .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
         .lenis.lenis-stopped { overflow: hidden; }
         .lenis.lenis-scrolling iframe { pointer-events: none; }
 
-        /* Spinner keyframe */
         @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
         .spin-anim { animation: spin 1s linear infinite; display:inline-block; }
     </style>
@@ -676,7 +702,8 @@
 <nav id="navbar">
     <div class="nav-inner">
         <div class="nav-logo" onclick="scrollToSection('hero')">
-            <img src="MAXORA%20png%20white.png" alt="Maxora">
+            <!-- PERFORMANCE FIX: width & height attributes prevent CLS -->
+            <img src="MAXORA%20png%20white.png" alt="Maxora Logo" width="38" height="38">
             <span>MAXORA</span>
         </div>
         <ul class="nav-links" id="navLinks">
@@ -686,7 +713,6 @@
             <li><a href="#" onclick="scrollToSection('impact')" data-ar="تأثيرنا" data-en="Impact">تأثيرنا</a></li>
         </ul>
         <div style="display:flex;align-items:center;gap:0.75rem">
-
             <button class="lang-btn" id="langToggle" onclick="toggleLanguage()"><span id="langText">EN</span></button>
             <button class="nav-cta" onclick="scrollToSection('booking')" data-ar="احجز موعد" data-en="Book Now">احجز موعد</button>
             <div class="nav-hamburger" id="hamburger" onclick="openMobileMenu()">
@@ -730,7 +756,6 @@
         <div class="marquee-item"><span class="dot"></span>Paid Ads</div>
         <div class="marquee-item"><span class="dot"></span>Social Media</div>
         <div class="marquee-item"><span class="dot"></span>Growth Strategy</div>
-        <!-- duplicate for seamless loop -->
         <div class="marquee-item"><span class="dot"></span>Digital Marketing</div>
         <div class="marquee-item"><span class="dot"></span>Web Development</div>
         <div class="marquee-item"><span class="dot"></span>Mobile Apps</div>
@@ -789,7 +814,6 @@
     <div class="promo-inner">
         <div class="reveal-left">
             <div class="section-label" data-ar="لماذا Maxora" data-en="Why Maxora">Why Maxora</div>
-            <!-- Promo content containers -->
             <div id="promo-web" class="promo-content">
                 <h2 class="section-title" data-ar="موقعك الحالي ضعيف؟" data-en="Is Your Website Holding You Back?">Is Your Website<br>Holding You Back?</h2>
                 <ul class="promo-checklist">
@@ -876,26 +900,13 @@
             </div>
         </div>
         <div class="reveal-right">
-            <!-- Stats card -->
             <div id="stats-web" class="stats-content stats-card">
                 <p class="section-label" style="margin-bottom:1.5rem" data-ar="النتائج" data-en="RESULTS">RESULTS</p>
                 <div class="stats-card-grid">
-                    <div class="stat-box">
-                        <div class="stat-box-num text-grad-gold">3X</div>
-                        <div class="stat-box-label" data-ar="زيادة الزيارات" data-en="Traffic Boost">Traffic Boost</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-box-num text-grad">95+</div>
-                        <div class="stat-box-label">PageSpeed</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-box-num text-grad-gold">100%</div>
-                        <div class="stat-box-label" data-ar="متوافق" data-en="Mobile Ready">Mobile Ready</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-box-num text-grad">#1</div>
-                        <div class="stat-box-label">SEO Rank</div>
-                    </div>
+                    <div class="stat-box"><div class="stat-box-num text-grad-gold">3X</div><div class="stat-box-label" data-ar="زيادة الزيارات" data-en="Traffic Boost">Traffic Boost</div></div>
+                    <div class="stat-box"><div class="stat-box-num text-grad">95+</div><div class="stat-box-label">PageSpeed</div></div>
+                    <div class="stat-box"><div class="stat-box-num text-grad-gold">100%</div><div class="stat-box-label" data-ar="متوافق" data-en="Mobile Ready">Mobile Ready</div></div>
+                    <div class="stat-box"><div class="stat-box-num text-grad">#1</div><div class="stat-box-label">SEO Rank</div></div>
                 </div>
             </div>
             <div id="stats-mobile" class="stats-content stats-card" style="display:none">
@@ -1016,7 +1027,7 @@
 
 <div class="section-divider"></div>
 
-<!-- ===== BOOKING ===== -->
+<!-- ===== CTA ===== -->
 <section class="cta-section" style="background:radial-gradient(ellipse at 50% 50%, rgba(0,87,255,0.08) 0%, transparent 70%)">
     <div class="cta-inner reveal">
         <p class="section-label" style="justify-content:center" data-ar="جاهز للانطلاق؟" data-en="Ready to Launch?">Ready to Launch?</p>
@@ -1106,56 +1117,41 @@
 <!-- Footer -->
 <footer>
     <div class="footer-inner">
-        <!-- Footer Brand Row -->
         <div class="footer-top">
             <div class="footer-logo">
-                <img src="MAXORA%20png%20white.png" alt="Maxora">
+                <!-- PERFORMANCE FIX: width & height attributes prevent CLS -->
+                <img src="MAXORA%20png%20white.png" alt="Maxora Logo" width="36" height="36">
                 <span>MAXORA</span>
             </div>
             <p class="footer-tagline" data-ar="وكالة النمو الرقمي وحلول التكنولوجيا المتكاملة" data-en="Digital Growth Agency & Integrated Tech Solutions">Digital Growth Agency & Integrated Tech Solutions</p>
 
-            <!-- Social Icons Row -->
             <div class="footer-socials">
-
-                <!-- WhatsApp -->
                 <a href="https://wa.me/201055707007?text=Hello%20Maxora%20Team%2C%20I%27m%20interested%20in%20your%20services." target="_blank" class="footer-social-icon soc-wa" title="WhatsApp" aria-label="WhatsApp">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                     <span class="soc-tooltip">WhatsApp</span>
                 </a>
-
-                <!-- Facebook -->
                 <a href="https://www.facebook.com/profile.php?id=100063969423266" target="_blank" rel="noopener noreferrer" class="footer-social-icon soc-fb" title="Facebook" aria-label="Facebook">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                     <span class="soc-tooltip">Facebook</span>
                 </a>
-
-                <!-- Instagram -->
                 <a href="https://www.instagram.com/maxora_agency?igsh=dHgyaGsycnNhbjJh&utm_source=ig_contact_invite" target="_blank" class="footer-social-icon soc-ig" title="Instagram" aria-label="Instagram">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                     <span class="soc-tooltip">Instagram</span>
                 </a>
-
-                <!-- LinkedIn -->
                 <a href="https://www.linkedin.com/company/maxora-agency/" target="_blank" class="footer-social-icon soc-li" title="LinkedIn" aria-label="LinkedIn">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
                     <span class="soc-tooltip">LinkedIn</span>
                 </a>
-
-                <!-- TikTok -->
                 <a href="https://www.tiktok.com/@maxora_agency?is_from_webapp=1&sender_device=pc" target="_blank" class="footer-social-icon soc-tt" title="TikTok" aria-label="TikTok">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
                     <span class="soc-tooltip">TikTok</span>
                 </a>
-
-                <!-- Email -->
-                <a href="mailto:maxora.agency@gmail.com" class="footer-social-icon soc-em" title="Send us an email" aria-label="Send us an email">
+                <a href="mailto:maxora.agency@gmail.com" class="footer-social-icon soc-em" title="Email" aria-label="Send us an email">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
                     <span class="soc-tooltip">Send us an email</span>
                 </a>
+            </div>
 
-            </div><!-- /footer-socials -->
-
-            <!-- Quick Links -->
             <nav class="footer-links" aria-label="Footer navigation">
                 <a href="#" onclick="scrollToSection('services')" data-ar="الخدمات" data-en="Services">Services</a>
                 <span class="footer-links-dot">·</span>
@@ -1165,8 +1161,7 @@
                 <span class="footer-links-dot">·</span>
                 <a href="#" onclick="scrollToSection('booking')" data-ar="احجز موعد" data-en="Book Meeting">Book Meeting</a>
             </nav>
-
-        </div><!-- /footer-top -->
+        </div>
 
         <div class="footer-divider"></div>
         <p class="footer-copy">© <span id="footerYear"></span> MAXORA. <span data-ar="جميع الحقوق محفوظة." data-en="All rights reserved.">All rights reserved.</span> <span style="color:#d4af37">— Where Growth Meets Technology</span></p>
@@ -1181,14 +1176,15 @@
     <span class="wa-tooltip" data-ar="تحدث معنا" data-en="Chat with us">Chat with us</span>
 </a>
 
-<!-- Scripts -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+<!-- ===== SCRIPTS ===== -->
+<!-- PERFORMANCE FIX: GSAP & Lenis loaded with defer -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" defer></script>
 
-<script src="phone.js"></script>
-<script src="script.js"></script>
+<script src="phone.js" defer></script>
+<script src="script.js" defer></script>
 
 <script>
 // ===== FOOTER YEAR =====
@@ -1251,7 +1247,6 @@ if (window.innerWidth > 768) {
             ctx.fillStyle = `rgba(56,182,255,${p.a})`;
             ctx.fill();
         });
-        // draw connections
         for (let i = 0; i < particles.length; i++) {
             for (let j = i + 1; j < particles.length; j++) {
                 const dx = particles[i].x - particles[j].x;
@@ -1272,28 +1267,28 @@ if (window.innerWidth > 768) {
     draw();
 })();
 
-// ===== LENIS SMOOTH SCROLL (Optimized) =====
+// ===== LENIS + GSAP (wait for defer scripts to load) =====
 let lenis;
-document.addEventListener('DOMContentLoaded', () => {
-    // Remove CSS scroll-behavior interference
+window.addEventListener('load', () => {
     document.documentElement.style.scrollBehavior = 'auto';
 
-    lenis = new Lenis({
-        duration: 1.1,
-        easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        smooth: true,
-        mouseMultiplier: 0.9,
-        smoothTouch: false,
-        touchMultiplier: 1.5,
-        infinite: false,
-        syncTouch: false,
-    });
-
-    function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-    requestAnimationFrame(raf);
+    if (typeof Lenis !== 'undefined') {
+        lenis = new Lenis({
+            duration: 1.1,
+            easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            smooth: true,
+            mouseMultiplier: 0.9,
+            smoothTouch: false,
+            touchMultiplier: 1.5,
+            infinite: false,
+            syncTouch: false,
+        });
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
+    }
 
     // ===== PRELOADER =====
-    lenis.stop();
+    if (lenis) lenis.stop();
     document.body.style.overflow = 'hidden';
 
     const plBar = document.getElementById('plBar');
@@ -1303,38 +1298,45 @@ document.addEventListener('DOMContentLoaded', () => {
         plBar.style.width = progress + '%';
     }, 120);
 
-    const tl = gsap.timeline({
-        onComplete: () => {
-            clearInterval(progressInterval);
-            plBar.style.width = '100%';
-            setTimeout(() => {
-                gsap.to('#preloader', { opacity: 0, duration: 0.6, ease: 'power2.inOut', onComplete: () => {
-                    document.getElementById('preloader').style.display = 'none';
-                    document.body.style.overflow = '';
-                    lenis.start();
-                    // hero entrance
-                    gsap.fromTo('.hero-h1', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: 'power3.out' });
-                    gsap.fromTo('.hero-sub', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, delay: 0.3, ease: 'power3.out' });
-                    gsap.fromTo('.hero-btns', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, delay: 0.5, ease: 'power3.out' });
-                }});
-            }, 200);
-        }
-    });
-
-    tl.set(['#plT1','#plT2','#plT3','#plT4'], { opacity: 0, y: 20 })
-      .to('#plT1', { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out', delay: 0.4 })
-      .to('#plT1', { opacity: 0, y: -15, duration: 0.5, ease: 'power2.in', delay: 1 })
-      .to('#pl-glow', { width: '50vw', height: '50vw', opacity: 1, duration: 1.5, ease: 'power2.out' }, '-=0.3')
-      .to('#plT2', { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' }, '-=1.2')
-      .to('#plT2', { opacity: 0, y: -15, duration: 0.6, ease: 'power2.in', delay: 1.4 })
-      .to('#plT3', { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.3')
-      .to('#plT3', { opacity: 0, y: -15, duration: 0.5, ease: 'power2.in', delay: 0.9 })
-      .to('#plT4', { opacity: 1, y: 0, duration: 0.9, ease: 'power2.out' }, '-=0.2')
-      .to('#plT4', { opacity: 0, y: -15, duration: 0.6, ease: 'power2.in', delay: 1.5 })
-      .to('#pl-glow', { opacity: 0, duration: 0.8 }, '-=0.3');
+    if (typeof gsap !== 'undefined') {
+        const tl = gsap.timeline({
+            onComplete: () => {
+                clearInterval(progressInterval);
+                plBar.style.width = '100%';
+                setTimeout(() => {
+                    gsap.to('#preloader', { opacity: 0, duration: 0.6, ease: 'power2.inOut', onComplete: () => {
+                        document.getElementById('preloader').style.display = 'none';
+                        document.body.style.overflow = '';
+                        if (lenis) lenis.start();
+                        gsap.fromTo('.hero-h1', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: 'power3.out' });
+                        gsap.fromTo('.hero-sub', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, delay: 0.3, ease: 'power3.out' });
+                        gsap.fromTo('.hero-btns', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, delay: 0.5, ease: 'power3.out' });
+                    }});
+                }, 200);
+            }
+        });
+        tl.set(['#plT1','#plT2','#plT3','#plT4'], { opacity: 0, y: 20 })
+          .to('#plT1', { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out', delay: 0.4 })
+          .to('#plT1', { opacity: 0, y: -15, duration: 0.5, ease: 'power2.in', delay: 1 })
+          .to('#pl-glow', { width: '50vw', height: '50vw', opacity: 1, duration: 1.5, ease: 'power2.out' }, '-=0.3')
+          .to('#plT2', { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' }, '-=1.2')
+          .to('#plT2', { opacity: 0, y: -15, duration: 0.6, ease: 'power2.in', delay: 1.4 })
+          .to('#plT3', { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.3')
+          .to('#plT3', { opacity: 0, y: -15, duration: 0.5, ease: 'power2.in', delay: 0.9 })
+          .to('#plT4', { opacity: 1, y: 0, duration: 0.9, ease: 'power2.out' }, '-=0.2')
+          .to('#plT4', { opacity: 0, y: -15, duration: 0.6, ease: 'power2.in', delay: 1.5 })
+          .to('#pl-glow', { opacity: 0, duration: 0.8 }, '-=0.3');
+    } else {
+        // Fallback if GSAP didn't load
+        setTimeout(() => {
+            document.getElementById('preloader').style.display = 'none';
+            document.body.style.overflow = '';
+            if (lenis) lenis.start();
+        }, 2500);
+    }
 });
 
-// ===== SCROLL REVEAL (IntersectionObserver — no GSAP/ScrollTrigger overhead on scroll) =====
+// ===== SCROLL REVEAL =====
 const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach(e => {
         if (e.isIntersecting) {
@@ -1363,7 +1365,6 @@ function animateCounters() {
         }, 16);
     });
 }
-
 const counterObserver = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) { animateCounters(); counterObserver.disconnect(); }});
 }, { threshold: 0.3 });
@@ -1373,7 +1374,6 @@ window.addEventListener('scroll', () => {
     const nav = document.getElementById('navbar');
     if (window.scrollY > 30) nav.classList.add('scrolled');
     else nav.classList.remove('scrolled');
-    // active nav link
     const sections = ['hero', 'services', 'vision', 'impact', 'booking'];
     let current = 'hero';
     sections.forEach(id => {
@@ -1400,9 +1400,6 @@ window.scrollToSection = function(id) {
 // ===== MOBILE MENU =====
 window.openMobileMenu = () => document.getElementById('mobileMenu').classList.add('open');
 window.closeMobileMenu = () => document.getElementById('mobileMenu').classList.remove('open');
-
-// initReveal and counterObserver are called from script.js DOMContentLoaded
-
 </script>
 </body>
 </html>
