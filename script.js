@@ -1,29 +1,19 @@
-// ===== MAXORA — script.js (fixed & production-ready) =====
-// Theme: strictly Dark Mode
+// ===== MAXORA — script.js (CLS-fixed) =====
 localStorage.setItem('maxora-theme', 'dark');
 
-// ===== VERCEL ANALYTICS — CUSTOM EVENTS =====
-// Safe wrapper: fires only when Vercel's script is loaded (window.va)
+// ===== VERCEL ANALYTICS =====
 function trackEvent(eventName, props) {
     try {
         if (typeof window.va === 'function') {
             window.va('event', Object.assign({ name: eventName }, props || {}));
         }
-    } catch(err) {
-        console.warn('[Maxora Analytics] trackEvent failed:', err);
-    }
+    } catch(err) {}
 }
 
-
-// Theme: strictly Dark Mode
-localStorage.setItem('maxora-theme', 'dark');
-
 // ===== LANGUAGE SYSTEM =====
-
 let currentLang = localStorage.getItem('language') || 'ar';
 
 function toggleLanguage() {
-    // Track language switch
     trackEvent("language_switch", { from: currentLang, to: currentLang === "ar" ? "en" : "ar" });
     const newLang = currentLang === 'ar' ? 'en' : 'ar';
     const btn = document.getElementById('langToggle');
@@ -64,11 +54,10 @@ function setLanguage(lang, updateChartData = false) {
     const descTA = document.querySelector('textarea[name="projectDescription"]');
     if (descTA) descTA.placeholder = lang === 'ar' ? 'أخبرنا عن مشروعك...' : 'Tell us about your project...';
     if (updateChartData && chartInstance) updateChartLabels(lang);
-    renderServices();
+    renderServices(currentFilter);
 }
 
 // ===== SERVICES =====
-
 const servicesData = [
     { id:1, title_ar:"تطوير مواقع ويب", title_en:"Website Development", category:"tech", desc_ar:"تطوير مواقع ويب متكاملة وسريعة تعكس قوة علامتك التجارية وتضمن أفضل أداء.", desc_en:"Integrated and fast website development that reflects your brand's power and ensures optimal performance.", iconChar:"💻" },
     { id:2, title_ar:"تطبيقات موبايل", title_en:"Mobile Apps", category:"tech", desc_ar:"تطبيقات موبايل (iOS & Android) مصممة لتسهيل وصول عملائك لخدماتك بأعلى كفاءة.", desc_en:"Mobile applications (iOS & Android) designed to maximize customer access to your services with efficiency.", iconChar:"📱" },
@@ -83,45 +72,63 @@ let currentFilter = 'all';
 function renderServices(filter = 'all') {
     const container = document.getElementById('services-grid');
     if (!container) return;
-    
+
     currentFilter = filter;
     const filtered = servicesData.filter(s => filter === 'all' || s.category === filter);
-    
-    // امسح بس لما في تغيير حقيقي
+
+    // ===== CLS FIX: بدل ما نمسح ونعيد بناء، نبني الكروت الجديدة الأول
+    // وبعدين نستبدل الـ container دفعة واحدة بدون أي shift =====
     const fragment = document.createDocumentFragment();
-    
+
     filtered.forEach((service, index) => {
         const isTech = service.category === 'tech';
         const tagClass = isTech ? 'service-tag tag-tech' : 'service-tag tag-marketing';
-        const tagText = isTech 
-            ? (currentLang === 'ar' ? 'تقنية' : 'Tech') 
+        const tagText = isTech
+            ? (currentLang === 'ar' ? 'تقنية' : 'Tech')
             : (currentLang === 'ar' ? 'تسويق' : 'Marketing');
         const title = currentLang === 'ar' ? service.title_ar : service.title_en;
         const desc  = currentLang === 'ar' ? service.desc_ar  : service.desc_en;
-        
+
         const card = document.createElement('div');
-        card.className = 'service-card reveal';
+        // ✅ CLS FIX: مش بنضيف 'reveal' في أول render عشان متعملش shift
+        // بس لو كان filter تغيير (مش أول تحميل) نضيف reveal
+        const isFirstRender = container.querySelector('.service-skeleton') !== null;
+        card.className = isFirstRender ? 'service-card' : 'service-card reveal';
         card.style.transitionDelay = `${0.05 * index}s`;
         card.innerHTML = `
             <div class="service-icon">${service.iconChar}</div>
             <h3 class="service-h3">${title}</h3>
             <p class="service-p">${desc}</p>
             <div class="${tagClass}">${tagText}</div>`;
-        
+
         fragment.appendChild(card);
     });
-    
-    // ✅ استبدل محتوى الـ container دفعة واحدة — مش element by element
-    container.innerHTML = '';
-    container.appendChild(fragment);
-    
-    // اعمل observe للـ cards الجديدة
-    container.querySelectorAll('.service-card').forEach(card => {
-        if (typeof revealObserver !== 'undefined') revealObserver.observe(card);
+
+    // ✅ CLS FIX: استبدل المحتوى دفعة واحدة بـ requestAnimationFrame
+    // عشان يحصل في نفس frame الـ paint ومش يسبب shift
+    requestAnimationFrame(() => {
+        // احتفظ بنفس عدد الأعمدة عن طريق تثبيت الـ grid dimensions
+        const rect = container.getBoundingClientRect();
+        container.style.minHeight = rect.height + 'px';
+
+        container.innerHTML = '';
+        container.appendChild(fragment);
+
+        // شيل الـ min-height بعد ما الكروت اتحطت
+        requestAnimationFrame(() => {
+            container.style.minHeight = '';
+        });
+
+        // اعمل observe للـ cards الجديدة
+        if (typeof revealObserver !== 'undefined') {
+            container.querySelectorAll('.service-card').forEach(card => {
+                revealObserver.observe(card);
+            });
+        }
     });
 }
+
 function filterServices(category) {
-    // Track service filter click
     trackEvent("service_filter", { category: category });
     document.querySelectorAll('.filter-tab').forEach(btn => btn.classList.remove('active'));
     const activeBtn = document.getElementById('btn-' + category);
@@ -129,8 +136,7 @@ function filterServices(category) {
     renderServices(category);
 }
 
-// ===== WHATSAPP / EMAIL =====
-
+// ===== BOOKING =====
 async function handleBookingSubmit(e) {
     e.preventDefault();
     const fullName = document.querySelector('input[name="fullName"]')?.value.trim() || '';
@@ -162,7 +168,6 @@ async function handleBookingSubmit(e) {
     showFormLoading(true);
     try { await sendEmailViaFormspree(bookingData); } catch(err) { console.warn('Email err:', err); }
     sendToWhatsApp(bookingData);
-    // Track successful booking submission
     trackEvent('booking_submitted', { service: bookingData.service, bookingId: bookingData.bookingId });
     showFormLoading(false);
     showFormSuccess();
@@ -170,7 +175,6 @@ async function handleBookingSubmit(e) {
 }
 
 function sendToWhatsApp(data) {
-    // Track WhatsApp CTA click
     trackEvent('whatsapp_cta_click', { service: data.service });
     const labels = { web:'Web Development', mobile:'Mobile App Development', 'ui-ux':'UI/UX Design', marketing:'Digital Marketing', branding:'Branding & Identity', consultation:'Business Consultation' };
     const msg = `Hello Maxora Team, I'm interested in your services.\n\nName: ${data.fullName}\nEmail: ${data.email}\nPhone: ${data.phone}\nCompany: ${data.company}\nService: ${labels[data.service]||data.service}\nDate: ${data.meetingDate}\nDetails: ${data.projectDescription}`;
@@ -204,9 +208,7 @@ function validateEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 function generateBookingId() { return 'BK-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2,7).toUpperCase(); }
 
 // ===== PROMO =====
-
 function updatePromoContent(service) {
-    // Track which service promo the user browses
     trackEvent('promo_tab_view', { service: service });
     document.querySelectorAll('.promo-content').forEach(el => el.style.display = 'none');
     document.querySelectorAll('.stats-content').forEach(el => el.style.display = 'none');
@@ -217,7 +219,6 @@ function updatePromoContent(service) {
 }
 
 // ===== CHART =====
-
 let chartInstance = null;
 
 function updateChartLabels(lang) {
@@ -260,7 +261,6 @@ function initChart() {
 }
 
 // ===== DOM READY =====
-
 document.addEventListener('DOMContentLoaded', () => {
     setLanguage(currentLang, false);
     renderServices();
