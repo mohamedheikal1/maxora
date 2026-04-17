@@ -264,13 +264,37 @@ function initChart() {
 document.addEventListener('DOMContentLoaded', () => {
     setLanguage(currentLang, false);
     renderServices();
-    initChart();
+    // PERF FIX: chart.js lazy loaded when chart enters viewport (saves ~200KB on initial load)
+    lazyLoadChart();
     updatePromoContent('web');
     const bookingForm = document.getElementById('bookingForm');
     if (bookingForm) bookingForm.addEventListener('submit', handleBookingSubmit);
     if (typeof initReveal === 'function') initReveal();
     const statsEl = document.querySelector('.stats-grid');
     if (statsEl && typeof counterObserver !== 'undefined') counterObserver.observe(statsEl);
+});
+
+function lazyLoadChart() {
+    const canvas = document.getElementById('growthChart');
+    if (!canvas) return;
+    const observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+            observer.disconnect();
+            if (typeof Chart !== 'undefined') {
+                initChart();
+            } else {
+                const s = document.createElement('script');
+                s.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+                s.onload = () => initChart();
+                document.head.appendChild(s);
+            }
+        }
+    }, { rootMargin: '200px' });
+    observer.observe(canvas);
+}
+
+window.addEventListener('load', () => {
+    console.log('%c✅ MAXORA — Where Growth Meets Technology', 'font-size:14px;color:#d4af37;font-weight:bold');
 });
 
 window.addEventListener('load', () => {
