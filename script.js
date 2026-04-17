@@ -78,26 +78,48 @@ const servicesData = [
     { id:6, title_ar:"الهوية التجارية والمحتوى", title_en:"Branding & Content Creation", category:"marketing", desc_ar:"تصميم هوية بصرية قوية ومحتوى إبداعي يصنع الـ Aura الخاصة بشركتك في السوق.", desc_en:"Strong visual identity and creative content that builds your company's unique aura in the market.", iconChar:"🎨" }
 ];
 
+let currentFilter = 'all';
+
 function renderServices(filter = 'all') {
     const container = document.getElementById('services-grid');
     if (!container) return;
-    container.innerHTML = '';
+    
+    currentFilter = filter;
     const filtered = servicesData.filter(s => filter === 'all' || s.category === filter);
+    
+    // امسح بس لما في تغيير حقيقي
+    const fragment = document.createDocumentFragment();
+    
     filtered.forEach((service, index) => {
         const isTech = service.category === 'tech';
         const tagClass = isTech ? 'service-tag tag-tech' : 'service-tag tag-marketing';
-        const tagText = isTech ? (currentLang === 'ar' ? 'تقنية' : 'Tech') : (currentLang === 'ar' ? 'تسويق' : 'Marketing');
+        const tagText = isTech 
+            ? (currentLang === 'ar' ? 'تقنية' : 'Tech') 
+            : (currentLang === 'ar' ? 'تسويق' : 'Marketing');
         const title = currentLang === 'ar' ? service.title_ar : service.title_en;
         const desc  = currentLang === 'ar' ? service.desc_ar  : service.desc_en;
+        
         const card = document.createElement('div');
         card.className = 'service-card reveal';
         card.style.transitionDelay = `${0.05 * index}s`;
-        card.innerHTML = `<div class="service-icon">${service.iconChar}</div><h3 class="service-h3">${title}</h3><p class="service-p">${desc}</p><div class="${tagClass}">${tagText}</div>`;
-        container.appendChild(card);
+        card.innerHTML = `
+            <div class="service-icon">${service.iconChar}</div>
+            <h3 class="service-h3">${title}</h3>
+            <p class="service-p">${desc}</p>
+            <div class="${tagClass}">${tagText}</div>`;
+        
+        fragment.appendChild(card);
+    });
+    
+    // ✅ استبدل محتوى الـ container دفعة واحدة — مش element by element
+    container.innerHTML = '';
+    container.appendChild(fragment);
+    
+    // اعمل observe للـ cards الجديدة
+    container.querySelectorAll('.service-card').forEach(card => {
         if (typeof revealObserver !== 'undefined') revealObserver.observe(card);
     });
 }
-
 function filterServices(category) {
     // Track service filter click
     trackEvent("service_filter", { category: category });
