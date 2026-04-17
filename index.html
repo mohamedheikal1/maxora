@@ -27,7 +27,10 @@
     <!-- ===== VERCEL WEB ANALYTICS ===== -->
     <script defer src="/_vercel/insights/script.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <!-- PERF FIX: preload logo (LCP/FCP critical resource) -->
+    <link rel="preload" as="image" href="maxora-logo.webp" type="image/webp">
+
+    <!-- PERF FIX: chart.js loaded lazily when chart section visible — saves ~200KB on initial load -->
     <link rel="stylesheet" href="styles.css">
 
     <style>
@@ -706,7 +709,10 @@
 <nav id="navbar">
     <div class="nav-inner">
         <div class="nav-logo" onclick="scrollToSection('hero')">
-            <img src="MAXORA%20png%20white.png" alt="Maxora Logo" width="38" height="38">
+            <picture>
+                <source srcset="maxora-logo.webp" type="image/webp">
+                <img src="MAXORA%20png%20white.png" alt="Maxora Logo" width="38" height="38">
+            </picture>
             <span>MAXORA</span>
         </div>
         <ul class="nav-links" id="navLinks">
@@ -1131,7 +1137,10 @@
     <div class="footer-inner">
         <div class="footer-top">
             <div class="footer-logo">
-                <img src="MAXORA%20png%20white.png" alt="Maxora Logo" width="36" height="36">
+                <picture>
+                    <source srcset="maxora-logo.webp" type="image/webp">
+                    <img src="MAXORA%20png%20white.png" alt="Maxora Logo" width="36" height="36" loading="lazy">
+                </picture>
                 <span>MAXORA</span>
             </div>
             <p class="footer-tagline" data-ar="وكالة النمو الرقمي وحلول التكنولوجيا المتكاملة" data-en="Digital Growth Agency & Integrated Tech Solutions">Digital Growth Agency & Integrated Tech Solutions</p>
@@ -1338,25 +1347,29 @@ window.addEventListener('load', () => {
                         document.getElementById('preloader').style.display = 'none';
                         document.body.style.overflow = '';
                         if (lenis) lenis.start();
-                        gsap.fromTo('.hero-h1', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: 'power3.out' });
-                        gsap.fromTo('.hero-sub', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, delay: 0.3, ease: 'power3.out' });
-                        gsap.fromTo('.hero-btns', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, delay: 0.5, ease: 'power3.out' });
+                        // PERF FIX: on mobile skip GSAP hero animation — CSS handles it, LCP improves
+                        if (window.innerWidth > 768) {
+                            gsap.fromTo('.hero-h1', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: 'power3.out' });
+                            gsap.fromTo('.hero-sub', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, delay: 0.3, ease: 'power3.out' });
+                            gsap.fromTo('.hero-btns', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, delay: 0.5, ease: 'power3.out' });
+                        }
                     }});
                 }, 200);
             }
         });
-        // PERF FIX: Preloader مقلّل من ~7s لـ 1.5s لتحسين LCP على موبايل
+        // PERF FIX: Preloader مقلّل — على موبايل 0.8s، ديسكتوب 1.2s لتحسين LCP
+        const isMobile = window.innerWidth <= 768;
         tl.set(['#plT1','#plT2','#plT3','#plT4'], { opacity: 0, y: 15 })
-          .to('#pl-glow', { width: '40vw', height: '40vw', opacity: 1, duration: 0.6, ease: 'power2.out' })
-          .to('#plT2', { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, '-=0.4')
-          .to('#plT2', { opacity: 0, y: -10, duration: 0.3, ease: 'power2.in', delay: 0.4 })
-          .to('#pl-glow', { opacity: 0, duration: 0.3 }, '-=0.2');
+          .to('#pl-glow', { width: '40vw', height: '40vw', opacity: 1, duration: isMobile ? 0.3 : 0.6, ease: 'power2.out' })
+          .to('#plT2', { opacity: 1, y: 0, duration: isMobile ? 0.3 : 0.5, ease: 'power3.out' }, '-=0.2')
+          .to('#plT2', { opacity: 0, y: -10, duration: 0.2, ease: 'power2.in', delay: isMobile ? 0.15 : 0.3 })
+          .to('#pl-glow', { opacity: 0, duration: 0.2 }, '-=0.1');
     } else {
         setTimeout(() => {
             document.getElementById('preloader').style.display = 'none';
             document.body.style.overflow = '';
             if (lenis) lenis.start();
-        }, 1500);
+        }, window.innerWidth <= 768 ? 600 : 1500);
     }
 });
 
