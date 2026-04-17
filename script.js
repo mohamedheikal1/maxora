@@ -155,6 +155,10 @@ async function handleBookingSubmit(e) {
         trackEvent('booking_validation_error', { reason: 'invalid_email' });
         showFormError(currentLang === 'ar' ? '⚠️ يرجى إدخال بريد إلكتروني صحيح!' : '⚠️ Please enter a valid email!'); return;
     }
+    if (!validatePhone(phone)) {
+        trackEvent('booking_validation_error', { reason: 'invalid_phone' });
+        showFormError(currentLang === 'ar' ? '⚠️ يرجى إدخال رقم هاتف صحيح!' : '⚠️ Please enter a valid phone number!'); return;
+    }
 
     const bookingData = { fullName, email, phone, company, service, meetingDate, projectDescription, bookingTime: new Date().toLocaleString(), bookingId: generateBookingId() };
 
@@ -205,6 +209,7 @@ function showFormLoading(on) {
     if (el) el.classList.toggle('show', on);
 }
 function validateEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
+function validatePhone(phone) { return /^[0-9+\-\s()]{6,20}$/.test(phone.replace(/\s/g,'')); }
 function generateBookingId() { return 'BK-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2,7).toUpperCase(); }
 
 // ===== PROMO =====
@@ -264,6 +269,12 @@ function initChart() {
 document.addEventListener('DOMContentLoaded', () => {
     setLanguage(currentLang, false);
     renderServices();
+    // Set minimum date to today (prevent past dates in booking form)
+    const dateInput = document.getElementById('meetingDateInput');
+    if (dateInput) {
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.min = today;
+    }
     // PERF FIX: chart.js lazy loaded when chart enters viewport (saves ~200KB on initial load)
     lazyLoadChart();
     updatePromoContent('web');
@@ -292,10 +303,6 @@ function lazyLoadChart() {
     }, { rootMargin: '200px' });
     observer.observe(canvas);
 }
-
-window.addEventListener('load', () => {
-    console.log('%c✅ MAXORA — Where Growth Meets Technology', 'font-size:14px;color:#d4af37;font-weight:bold');
-});
 
 window.addEventListener('load', () => {
     console.log('%c✅ MAXORA — Where Growth Meets Technology', 'font-size:14px;color:#d4af37;font-weight:bold');
