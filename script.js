@@ -1,5 +1,4 @@
 // ===== MAXORA — script.js (fixed & production-ready) =====
-
 // Theme: strictly Dark Mode
 localStorage.setItem('maxora-theme', 'dark');
 
