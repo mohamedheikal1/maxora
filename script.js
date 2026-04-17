@@ -151,6 +151,12 @@ async function handleBookingSubmit(e) {
         trackEvent('booking_validation_error', { reason: 'missing_fields' });
         showFormError(currentLang === 'ar' ? '⚠️ يرجى ملء جميع الحقول!' : '⚠️ Please fill all fields!'); return;
     }
+    // Block past dates — works on both desktop and mobile
+    const today = new Date().toISOString().split('T')[0];
+    if (meetingDate < today) {
+        trackEvent('booking_validation_error', { reason: 'past_date' });
+        showFormError(currentLang === 'ar' ? '⚠️ لا يمكن اختيار تاريخ في الماضي!' : '⚠️ You cannot select a past date!'); return;
+    }
     if (!validateEmail(email)) {
         trackEvent('booking_validation_error', { reason: 'invalid_email' });
         showFormError(currentLang === 'ar' ? '⚠️ يرجى إدخال بريد إلكتروني صحيح!' : '⚠️ Please enter a valid email!'); return;
@@ -274,6 +280,26 @@ document.addEventListener('DOMContentLoaded', () => {
     if (dateInput) {
         const today = new Date().toISOString().split('T')[0];
         dateInput.min = today;
+
+        // Block past dates on mobile too (some browsers ignore min attribute)
+        dateInput.addEventListener('change', function() {
+            if (this.value && this.value < today) {
+                this.value = today;
+                showFormError(currentLang === 'ar'
+                    ? '⚠️ لا يمكن اختيار تاريخ في الماضي!'
+                    : '⚠️ You cannot select a past date!');
+            }
+        });
+
+        // Also block on input event (for manual typing on mobile)
+        dateInput.addEventListener('blur', function() {
+            if (this.value && this.value < today) {
+                this.value = today;
+                showFormError(currentLang === 'ar'
+                    ? '⚠️ لا يمكن اختيار تاريخ في الماضي!'
+                    : '⚠️ You cannot select a past date!');
+            }
+        });
     }
     // PERF FIX: chart.js lazy loaded when chart enters viewport (saves ~200KB on initial load)
     lazyLoadChart();
