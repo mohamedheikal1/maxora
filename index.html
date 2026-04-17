@@ -12,6 +12,12 @@
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Bebas+Neue&family=Space+Grotesk:wght@400;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Bebas+Neue&family=Space+Grotesk:wght@400;600;700&display=swap"></noscript>
 
+    <!-- PERF FIX: preconnect to CDNs used by deferred scripts -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+
     <!-- ===== VERCEL SPEED INSIGHTS ===== -->
     <script>
     window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
@@ -280,6 +286,13 @@
             opacity: 0; transform: translateY(20px);
             animation: fadeUp 0.8s 0.9s ease forwards;
         }
+        /* PERF FIX: on mobile show hero content immediately — no animation delay */
+        @media (max-width: 768px) {
+            .hero-h1 { animation-delay: 0s !important; }
+            .hero-sub { animation-delay: 0.1s !important; }
+            .hero-btns { animation-delay: 0.2s !important; }
+            .hero-eyebrow { animation-delay: 0s !important; }
+        }
         @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
         .btn-primary {
@@ -307,6 +320,8 @@
 
         /* hero bg canvas */
         #heroCanvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.5; pointer-events: none; }
+        /* PERF FIX: hide canvas on mobile — not rendered but also not computed */
+        @media (max-width: 768px) { #heroCanvas { display: none; } }
         .hero-glow-1 { position: absolute; top: -10%; left: 10%; width: 40vw; height: 40vw; background: radial-gradient(circle, rgba(0,87,255,0.15) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
         .hero-glow-2 { position: absolute; bottom: -10%; right: 10%; width: 30vw; height: 30vw; background: radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
 
@@ -1174,8 +1189,16 @@
 
 <!-- ===== SCRIPTS ===== -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js" defer></script>
+<!-- ScrollTrigger removed — not used (saves ~40KB) -->
+<script>
+// PERF FIX: load Lenis only on desktop — saves ~15KB on mobile
+if (window.innerWidth > 768) {
+    var s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js';
+    s.defer = true;
+    document.head.appendChild(s);
+}
+</script>
 <!-- font-awesome removed — using inline SVGs instead (saves ~200KB) -->
 
 <script src="phone.js" defer></script>
@@ -1210,28 +1233,37 @@ if (window.innerWidth > 768) {
     });
 }
 
-// ===== HERO CANVAS PARTICLES =====
+// ===== HERO CANVAS PARTICLES — disabled on mobile for LCP =====
 (function() {
+    // PERF FIX: skip particles on mobile — saves ~50ms CPU blocking
+    if (window.innerWidth <= 768) return;
     const canvas = document.getElementById('heroCanvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    let W, H, particles = [];
+    let W, H, particles = [], animId, running = true;
     function resize() {
         W = canvas.width = canvas.offsetWidth;
         H = canvas.height = canvas.offsetHeight;
     }
     resize();
-    window.addEventListener('resize', resize);
-    for (let i = 0; i < 60; i++) {
+    window.addEventListener('resize', resize, { passive: true });
+    // PERF FIX: reduced from 60 to 30 particles
+    for (let i = 0; i < 30; i++) {
         particles.push({
             x: Math.random() * 1000, y: Math.random() * 800,
-            r: Math.random() * 1.5 + 0.3,
-            vx: (Math.random() - 0.5) * 0.3,
-            vy: (Math.random() - 0.5) * 0.3,
-            a: Math.random() * 0.6 + 0.1
+            r: Math.random() * 1.2 + 0.3,
+            vx: (Math.random() - 0.5) * 0.25,
+            vy: (Math.random() - 0.5) * 0.25,
+            a: Math.random() * 0.5 + 0.1
         });
     }
+    // PERF FIX: pause when tab is hidden
+    document.addEventListener('visibilitychange', () => {
+        running = !document.hidden;
+        if (running) draw();
+    });
     function draw() {
+        if (!running) return;
         ctx.clearRect(0, 0, W, H);
         particles.forEach(p => {
             p.x += p.vx; p.y += p.vy;
@@ -1242,16 +1274,17 @@ if (window.innerWidth > 768) {
             ctx.fillStyle = `rgba(56,182,255,${p.a})`;
             ctx.fill();
         });
+        // PERF FIX: reduced connection distance from 120 to 80
         for (let i = 0; i < particles.length; i++) {
             for (let j = i + 1; j < particles.length; j++) {
                 const dx = particles[i].x - particles[j].x;
                 const dy = particles[i].y - particles[j].y;
                 const dist = Math.sqrt(dx*dx + dy*dy);
-                if (dist < 120) {
+                if (dist < 80) {
                     ctx.beginPath();
                     ctx.moveTo(particles[i].x, particles[i].y);
                     ctx.lineTo(particles[j].x, particles[j].y);
-                    ctx.strokeStyle = `rgba(0,87,255,${0.08 * (1 - dist/120)})`;
+                    ctx.strokeStyle = `rgba(0,87,255,${0.07 * (1 - dist/80)})`;
                     ctx.lineWidth = 0.5;
                     ctx.stroke();
                 }
@@ -1259,17 +1292,19 @@ if (window.innerWidth > 768) {
         }
         requestAnimationFrame(draw);
     }
-    draw();
+    // PERF FIX: start particles after page load — don't block LCP
+    window.addEventListener('load', draw);
 })();
 
 // ===== LENIS + GSAP =====
 let lenis;
-document.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('load', () => {
     document.documentElement.style.scrollBehavior = 'auto';
 
-    if (typeof Lenis !== 'undefined') {
+    // PERF FIX: skip Lenis smooth scroll on mobile — reduces JS execution
+    if (typeof Lenis !== 'undefined' && window.innerWidth > 768) {
         lenis = new Lenis({
-            duration: 1.1,
+            duration: 1.0,
             easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
             smooth: true,
             mouseMultiplier: 0.9,
