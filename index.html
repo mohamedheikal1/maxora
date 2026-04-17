@@ -6,7 +6,7 @@
     <title>Maxora — Where Growth Meets Technology</title>
     <meta name="description" content="Maxora — وكالة النمو الرقمي وحلول التكنولوجيا المتكاملة">
 
-    <!-- ===== PERFORMANCE FIX: Fonts via preload (non-blocking) ===== -->
+    <!-- ===== FONTS via preload (non-blocking) ===== -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style"
@@ -25,30 +25,28 @@
     <!-- ===== VERCEL WEB ANALYTICS ===== -->
     <script defer src="/_vercel/insights/script.js"></script>
 
-    <!-- ===== PERFORMANCE FIX: Tailwind & Chart.js deferred ===== -->
-    <script src="https://cdn.tailwindcss.com" defer></script>
+    <!-- ===== CLS FIX #1: Tailwind بدون defer — لازم يتحمل قبل الـ HTML ===== -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // Tailwind config must run after tailwind loads
-        window.addEventListener('load', function() {
-            if (window.tailwind) {
-                tailwind.config = {
-                    theme: {
-                        extend: {
-                            colors: {
-                                brand: {
-                                    dark: '#060c18',
-                                    navy: '#0a1628',
-                                    blue: '#0057ff',
-                                    sky: '#38b6ff',
-                                    gold: '#d4af37',
-                                    silver: '#e2e8f0'
-                                }
+        // CLS FIX #1: Tailwind config مباشرة — مش في window.addEventListener('load')
+        if (window.tailwind) {
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            brand: {
+                                dark: '#060c18',
+                                navy: '#0a1628',
+                                blue: '#0057ff',
+                                sky: '#38b6ff',
+                                gold: '#d4af37',
+                                silver: '#e2e8f0'
                             }
                         }
                     }
                 }
             }
-        });
+        }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
     <link rel="stylesheet" href="styles.css">
@@ -63,7 +61,6 @@
             padding: 0;
         }
 
-        /* PERFORMANCE FIX: Only transition specific props, NEVER 'all' */
         body, section, div, nav {
             transition-property: opacity, color, background-color, border-color, box-shadow !important;
             transition-duration: 200ms !important;
@@ -180,14 +177,11 @@
             height: 72px;
         }
         .nav-logo { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-
-        /* ===== PERFORMANCE FIX: CLS — explicit dimensions on logo images ===== */
         .nav-logo img {
             width: 38px;
             height: 38px;
             object-fit: contain;
             filter: drop-shadow(0 0 12px rgba(0,87,255,0.5));
-            /* Prevent layout shift */
             flex-shrink: 0;
         }
         .nav-logo span { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.15em; color: #fff; }
@@ -373,9 +367,19 @@
             transition: all 0.25s ease !important;
         }
         .filter-tab.active, .filter-tab:hover { background: rgba(0,87,255,0.15); color: #38b6ff; }
-        .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
-        @media (max-width: 900px) { .services-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 580px) { .services-grid { grid-template-columns: 1fr; } }
+
+        /* ===== CLS FIX #3: Services grid — min-height لمنع الـ layout shift ===== */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 3rem;
+            /* Reserve minimum space before JS renders cards */
+            min-height: 400px;
+        }
+        @media (max-width: 900px) { .services-grid { grid-template-columns: repeat(2, 1fr); min-height: 600px; } }
+        @media (max-width: 580px) { .services-grid { grid-template-columns: 1fr; min-height: 800px; } }
+
         .service-card {
             padding: 2rem; border-radius: 16px;
             background: rgba(10, 22, 40, 0.5);
@@ -472,8 +476,6 @@
         .footer-inner { max-width: 1200px; margin: 0 auto; }
         .footer-top { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; margin-bottom: 2.5rem; }
         .footer-logo { display: flex; align-items: center; gap: 10px; }
-
-        /* ===== PERFORMANCE FIX: CLS — explicit dimensions on footer logo ===== */
         .footer-logo img {
             width: 36px;
             height: 36px;
@@ -666,6 +668,24 @@
 
         @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
         .spin-anim { animation: spin 1s linear infinite; display:inline-block; }
+
+        /* ===== CLS FIX #2: skeleton loaders للـ service cards قبل ما JS يشتغل ===== */
+        .service-skeleton {
+            padding: 2rem;
+            border-radius: 16px;
+            background: rgba(10, 22, 40, 0.5);
+            border: 1px solid rgba(56,182,255,0.08);
+            animation: skeletonPulse 1.5s ease-in-out infinite;
+        }
+        .skeleton-icon { width: 52px; height: 52px; border-radius: 12px; background: rgba(255,255,255,0.05); margin-bottom: 1.5rem; }
+        .skeleton-line { height: 14px; border-radius: 6px; background: rgba(255,255,255,0.04); margin-bottom: 10px; }
+        .skeleton-line.short { width: 60%; }
+        .skeleton-line.medium { width: 80%; }
+        .skeleton-line.long { width: 100%; }
+        @keyframes skeletonPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
     </style>
 </head>
 <body id="body">
@@ -702,7 +722,6 @@
 <nav id="navbar">
     <div class="nav-inner">
         <div class="nav-logo" onclick="scrollToSection('hero')">
-            <!-- PERFORMANCE FIX: width & height attributes prevent CLS -->
             <img src="MAXORA%20png%20white.png" alt="Maxora Logo" width="38" height="38">
             <span>MAXORA</span>
         </div>
@@ -803,7 +822,16 @@
                 <button class="filter-tab" onclick="filterServices('marketing')" id="btn-marketing" data-ar="التسويق" data-en="Growth Marketing">Growth Marketing</button>
             </div>
         </div>
-        <div class="services-grid" id="services-grid"></div>
+
+        <!-- CLS FIX #2: Skeleton placeholders تتعرض فوراً قبل JS -->
+        <div class="services-grid" id="services-grid">
+            <div class="service-skeleton"><div class="skeleton-icon"></div><div class="skeleton-line short"></div><div class="skeleton-line long"></div><div class="skeleton-line medium"></div></div>
+            <div class="service-skeleton"><div class="skeleton-icon"></div><div class="skeleton-line short"></div><div class="skeleton-line long"></div><div class="skeleton-line medium"></div></div>
+            <div class="service-skeleton"><div class="skeleton-icon"></div><div class="skeleton-line short"></div><div class="skeleton-line long"></div><div class="skeleton-line medium"></div></div>
+            <div class="service-skeleton"><div class="skeleton-icon"></div><div class="skeleton-line short"></div><div class="skeleton-line long"></div><div class="skeleton-line medium"></div></div>
+            <div class="service-skeleton"><div class="skeleton-icon"></div><div class="skeleton-line short"></div><div class="skeleton-line long"></div><div class="skeleton-line medium"></div></div>
+            <div class="service-skeleton"><div class="skeleton-icon"></div><div class="skeleton-line short"></div><div class="skeleton-line long"></div><div class="skeleton-line medium"></div></div>
+        </div>
     </div>
 </section>
 
@@ -1119,7 +1147,6 @@
     <div class="footer-inner">
         <div class="footer-top">
             <div class="footer-logo">
-                <!-- PERFORMANCE FIX: width & height attributes prevent CLS -->
                 <img src="MAXORA%20png%20white.png" alt="Maxora Logo" width="36" height="36">
                 <span>MAXORA</span>
             </div>
@@ -1177,7 +1204,6 @@
 </a>
 
 <!-- ===== SCRIPTS ===== -->
-<!-- PERFORMANCE FIX: GSAP & Lenis loaded with defer -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js" defer></script>
@@ -1267,7 +1293,7 @@ if (window.innerWidth > 768) {
     draw();
 })();
 
-// ===== LENIS + GSAP (wait for defer scripts to load) =====
+// ===== LENIS + GSAP =====
 let lenis;
 window.addEventListener('load', () => {
     document.documentElement.style.scrollBehavior = 'auto';
@@ -1327,7 +1353,6 @@ window.addEventListener('load', () => {
           .to('#plT4', { opacity: 0, y: -15, duration: 0.6, ease: 'power2.in', delay: 1.5 })
           .to('#pl-glow', { opacity: 0, duration: 0.8 }, '-=0.3');
     } else {
-        // Fallback if GSAP didn't load
         setTimeout(() => {
             document.getElementById('preloader').style.display = 'none';
             document.body.style.overflow = '';
