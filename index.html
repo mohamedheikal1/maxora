@@ -6,15 +6,11 @@
     <title>Maxora — Where Growth Meets Technology</title>
     <meta name="description" content="Maxora — وكالة النمو الرقمي وحلول التكنولوجيا المتكاملة">
 
-    <!-- ===== FONTS via preload (non-blocking) ===== -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" 
-  href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Bebas+Neue&family=Space+Grotesk:wght@400;600;700&display=optional"
-  media="print" onload="this.media='all'">
-    <noscript>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Bebas+Neue&family=Space+Grotesk:wght@400;600;700&display=swap">
-    </noscript>
+    <!-- ===== FONTS — non-blocking preload ===== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Bebas+Neue&family=Space+Grotesk:wght@400;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Bebas+Neue&family=Space+Grotesk:wght@400;600;700&display=swap"></noscript>
 
     <!-- ===== VERCEL SPEED INSIGHTS ===== -->
     <script>
@@ -25,29 +21,6 @@
     <!-- ===== VERCEL WEB ANALYTICS ===== -->
     <script defer src="/_vercel/insights/script.js"></script>
 
-    <!-- ===== CLS FIX #1: Tailwind بدون defer — لازم يتحمل قبل الـ HTML ===== -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        // CLS FIX #1: Tailwind config مباشرة — مش في window.addEventListener('load')
-        if (window.tailwind) {
-            tailwind.config = {
-                theme: {
-                    extend: {
-                        colors: {
-                            brand: {
-                                dark: '#060c18',
-                                navy: '#0a1628',
-                                blue: '#0057ff',
-                                sky: '#38b6ff',
-                                gold: '#d4af37',
-                                silver: '#e2e8f0'
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
     <link rel="stylesheet" href="styles.css">
 
@@ -66,7 +39,8 @@
         body {
             background: #060c18;
             color: #e2e8f0;
-            font-family: 'Cairo', sans-serif;
+            /* CLS/LCP FIX: system font fallback بيمنع FOUT ويسرع الـ LCP */
+            font-family: 'Cairo', 'Arial', sans-serif;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
@@ -1202,7 +1176,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" defer></script>
+<!-- font-awesome removed — using inline SVGs instead (saves ~200KB) -->
 
 <script src="phone.js" defer></script>
 <script src="script.js" defer></script>
