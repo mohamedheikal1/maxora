@@ -7,11 +7,11 @@
     <meta name="description" content="Maxora — وكالة النمو الرقمي وحلول التكنولوجيا المتكاملة">
 
     <!-- ===== FONTS via preload (non-blocking) ===== -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" as="style"
-      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Bebas+Neue&family=Space+Grotesk:wght@400;600;700&display=swap"
-      onload="this.onload=null;this.rel='stylesheet'">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" 
+  href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Bebas+Neue&family=Space+Grotesk:wght@400;600;700&display=optional"
+  media="print" onload="this.media='all'">
     <noscript>
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Bebas+Neue&family=Space+Grotesk:wght@400;600;700&display=swap">
     </noscript>
@@ -61,11 +61,6 @@
             padding: 0;
         }
 
-        body, section, div, nav {
-            transition-property: opacity, color, background-color, border-color, box-shadow !important;
-            transition-duration: 200ms !important;
-            transition-timing-function: ease !important;
-        }
 
         /* ===== GLOBAL ===== */
         body {
@@ -1295,7 +1290,7 @@ if (window.innerWidth > 768) {
 
 // ===== LENIS + GSAP =====
 let lenis;
-window.addEventListener('load', () => {
+document.addEventListener('DOMContentLoaded', () => {
     document.documentElement.style.scrollBehavior = 'auto';
 
     if (typeof Lenis !== 'undefined') {
