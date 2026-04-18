@@ -872,3 +872,14 @@ body:not(.light-mode) .text-gray-400 {
         width: 260px;
     }
 }
+
+/* ===== FOCUS STYLES — Keyboard Accessibility ===== */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid #38b6ff;
+    outline-offset: 3px;
+    border-radius: 4px;
+}
