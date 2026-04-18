@@ -21,6 +21,9 @@
     <meta property="og:title" content="Maxora — Where Growth Meets Technology">
     <meta property="og:description" content="وكالة النمو الرقمي وحلول التكنولوجيا المتكاملة — نبني هويات رقمية متكاملة تدمج قوة البرمجيات مع ذكاء التسويق.">
     <meta property="og:image" content="https://maxora-agency.vercel.app/maxora-logo.webp">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Maxora — Where Growth Meets Technology">
     <meta property="og:locale" content="ar_EG">
     <meta property="og:site_name" content="Maxora">
     <meta name="twitter:card" content="summary_large_image">
@@ -29,6 +32,10 @@
     <meta name="twitter:image" content="https://maxora-agency.vercel.app/maxora-logo.webp">
     <link rel="canonical" href="https://maxora-agency.vercel.app/">
     <meta name="robots" content="index, follow">
+    <meta name="author" content="Maxora Agency">
+    <meta name="keywords" content="digital marketing egypt, web development egypt, mobile app development, UI UX design, social media management, paid ads, branding, maxora">
+    <meta name="geo.region" content="EG">
+    <meta name="geo.placename" content="Egypt">
 
     <!-- ===== FONTS — non-blocking preload ===== -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -43,7 +50,7 @@
     <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
       <!-- =====cloudflare ===== -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
     <!-- ===== VERCEL SPEED INSIGHTS ===== -->
     <script>
     window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
@@ -781,7 +788,7 @@
 <nav id="navbar">
     <div class="nav-inner">
         <div class="nav-logo" onclick="scrollToSection('hero')">
-            <img src="maxora-logo.webp" alt="Maxora Logo" width="38" height="38">
+            <img src="maxora-logo.webp" alt="Maxora — Digital Agency Logo" width="38" height="38" fetchpriority="high" decoding="async">
             <span>MAXORA</span>
         </div>
         <ul class="nav-links" id="navLinks">
@@ -1147,11 +1154,11 @@
                 <div class="form-row" style="margin-bottom:1.5rem">
                     <div class="form-group">
                         <label class="form-label" for="fullNameInput" data-ar="الاسم الكامل" data-en="Full Name">Full Name</label>
-                        <input type="text" id="fullNameInput" name="fullName" class="form-input" placeholder="Your name" required>
+                        <input type="text" id="fullNameInput" name="fullName" class="form-input" placeholder="Your name" autocomplete="name" aria-label="Full Name" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="emailInput" data-ar="البريد الإلكتروني" data-en="Email">Email</label>
-                        <input type="email" id="emailInput" name="email" class="form-input" placeholder="email@example.com" required>
+                        <input type="email" id="emailInput" name="email" class="form-input" placeholder="email@example.com" autocomplete="email" aria-label="Email" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="phoneInput" data-ar="رقم الهاتف" data-en="Phone">Phone</label>
@@ -1172,7 +1179,7 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="companyInput" data-ar="اسم الشركة" data-en="Company">Company</label>
-                        <input type="text" id="companyInput" name="company" class="form-input" placeholder="Your company" required>
+                        <input type="text" id="companyInput" name="company" class="form-input" placeholder="Your company" autocomplete="organization" aria-label="Company" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="serviceSelect" data-ar="الخدمة المطلوبة" data-en="Service">Service</label>
@@ -1207,7 +1214,7 @@
     <div class="footer-inner">
         <div class="footer-top">
             <div class="footer-logo">
-                <img src="maxora-logo.webp" alt="Maxora Logo" width="36" height="36" loading="lazy">
+                <img src="maxora-logo.webp" alt="Maxora — Digital Agency Logo" width="36" height="36" loading="lazy" decoding="async">
                 <span>MAXORA</span>
             </div>
             <p class="footer-tagline" data-ar="وكالة النمو الرقمي وحلول التكنولوجيا المتكاملة" data-en="Digital Growth Agency & Integrated Tech Solutions">Digital Growth Agency & Integrated Tech Solutions</p>
