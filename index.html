@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Maxora Agency | Digital Marketing & Web Development Egypt</title>
-    <meta name="description" content="Maxora — وكالة النمو الرقمي المتكاملة. نقدم تطوير مواقع، تطبيقات موبايل، تصميم UI/UX، إدارة سوشيال ميديا، إعلانات ممولة، وبناء هوية تجارية. Where Growth Meets Technology.">
+    <meta name="description" content="Maxora — وكالة النمو الرقمي المتكاملة. تطوير مواقع، تطبيقات موبايل، UI/UX، سوشيال ميديا، إعلانات ممولة، وهوية تجارية. Where Growth Meets Technology.">
 
     <!-- ===== FAVICON ===== -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -93,6 +93,7 @@
       "slogan": "Where Growth Meets Technology"
     }
     </script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <link rel="stylesheet" href="styles.css">
 
     <style>
@@ -1193,6 +1194,13 @@
                     <label class="form-label" for="projectDescInput" data-ar="وصف المشروع" data-en="Project Description">Project Description</label>
                     <textarea id="projectDescInput" name="projectDescription" class="form-input form-textarea" placeholder="Tell us about your project..." required></textarea>
                 </div>
+                <!-- Cloudflare Turnstile CAPTCHA -->
+                <div class="cf-turnstile" 
+                     data-sitekey="0x4AAAAAAA_REPLACE_WITH_YOUR_SITEKEY" 
+                     data-theme="dark"
+                     data-language="ar"
+                     style="margin-bottom:1rem;"
+                     id="turnstileWidget"></div>
                 <button type="submit" class="submit-btn" data-ar="تأكيد الموعد ✦" data-en="Confirm Appointment ✦">Confirm Appointment ✦</button>
             </form>
         </div>

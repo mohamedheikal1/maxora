@@ -10,6 +10,85 @@ function trackEvent(eventName, props) {
     } catch(err) {}
 }
 
+
+// ===== RATE LIMITING (anti-spam) =====
+const RATE_LIMIT = {
+    maxAttempts: 3,        // max 3 submissions
+    windowMs: 60 * 60 * 1000, // per 1 hour
+    storageKey: 'maxora_form_attempts'
+};
+
+function checkRateLimit() {
+    try {
+        const stored = JSON.parse(localStorage.getItem(RATE_LIMIT.storageKey) || '{"attempts":[],"blocked":false}');
+        const now = Date.now();
+        // Remove attempts older than window
+        stored.attempts = stored.attempts.filter(t => now - t < RATE_LIMIT.windowMs);
+        if (stored.attempts.length >= RATE_LIMIT.maxAttempts) {
+            const oldest = stored.attempts[0];
+            const resetIn = Math.ceil((RATE_LIMIT.windowMs - (now - oldest)) / 60000);
+            return { allowed: false, resetIn };
+        }
+        return { allowed: true };
+    } catch(e) {
+        return { allowed: true };
+    }
+}
+
+function recordAttempt() {
+    try {
+        const stored = JSON.parse(localStorage.getItem(RATE_LIMIT.storageKey) || '{"attempts":[]}');
+        const now = Date.now();
+        stored.attempts = stored.attempts.filter(t => now - t < RATE_LIMIT.windowMs);
+        stored.attempts.push(now);
+        localStorage.setItem(RATE_LIMIT.storageKey, JSON.stringify(stored));
+    } catch(e) {}
+}
+
+// ===== TURNSTILE CAPTCHA VALIDATION =====
+function getTurnstileToken() {
+    const response = document.querySelector('[name="cf-turnstile-response"]');
+    return response ? response.value : null;
+}
+
+function resetTurnstile() {
+    if (typeof turnstile !== 'undefined') {
+        turnstile.reset();
+    }
+}
+
+// ===== SUPABASE CONFIG =====
+// ⚠️ استبدل القيمتين دول ببياناتك من Supabase Dashboard
+const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
+const SUPABASE_KEY = 'YOUR_ANON_KEY';
+
+async function saveToSupabase(data) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/bookings`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+            full_name:    data.fullName,
+            email:        data.email,
+            phone:        data.phone,
+            company:      data.company,
+            service:      data.service,
+            meeting_date: data.meetingDate,
+            description:  data.projectDescription,
+            booking_id:   data.bookingId,
+            status:       'pending'
+        })
+    });
+    if (!res.ok) {
+        const err = await res.text();
+        throw new Error('Supabase error: ' + err);
+    }
+}
+
 // ===== LANGUAGE SYSTEM =====
 let currentLang = localStorage.getItem('language') || 'ar';
 
@@ -147,6 +226,26 @@ async function handleBookingSubmit(e) {
     const meetingDate = document.querySelector('input[name="meetingDate"]')?.value || '';
     const projectDescription = document.querySelector('textarea[name="projectDescription"]')?.value.trim() || '';
 
+    // Rate limit check
+    const rateCheck = checkRateLimit();
+    if (!rateCheck.allowed) {
+        trackEvent('booking_validation_error', { reason: 'rate_limited' });
+        showFormError(currentLang === 'ar'
+            ? \`⚠️ لقد تجاوزت الحد المسموح. حاول مرة أخرى بعد \${rateCheck.resetIn} دقيقة.\`
+            : \`⚠️ Too many attempts. Please try again in \${rateCheck.resetIn} minutes.\`);
+        return;
+    }
+
+    // Turnstile CAPTCHA check
+    const turnstileToken = getTurnstileToken();
+    if (!turnstileToken) {
+        trackEvent('booking_validation_error', { reason: 'captcha_missing' });
+        showFormError(currentLang === 'ar'
+            ? '⚠️ يرجى إكمال التحقق من الهوية أولاً!'
+            : '⚠️ Please complete the CAPTCHA verification first!');
+        return;
+    }
+
     if (!fullName || !email || !phone || !company || !service || !meetingDate || !projectDescription) {
         trackEvent('booking_validation_error', { reason: 'missing_fields' });
         showFormError(currentLang === 'ar' ? '⚠️ يرجى ملء جميع الحقول!' : '⚠️ Please fill all fields!'); return;
@@ -176,12 +275,18 @@ async function handleBookingSubmit(e) {
     } catch(err) {}
 
     showFormLoading(true);
+    // Save to Supabase DB
+    try { await saveToSupabase(bookingData); } catch(err) { console.warn('Supabase err:', err); }
+    // Send email via Formspree
     try { await sendEmailViaFormspree(bookingData); } catch(err) { console.warn('Email err:', err); }
+    // Send WhatsApp notification
     sendToWhatsApp(bookingData);
+    recordAttempt(); // rate limiting
     trackEvent('booking_submitted', { service: bookingData.service, bookingId: bookingData.bookingId });
     showFormLoading(false);
     showFormSuccess();
     document.getElementById('bookingForm').reset();
+    resetTurnstile();
 }
 
 function sendToWhatsApp(data) {
