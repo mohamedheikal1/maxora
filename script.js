@@ -1,6 +1,15 @@
 // ===== MAXORA — script.js (CLS-fixed) =====
 localStorage.setItem('maxora-theme', 'dark');
 
+// ===== SUPABASE CONFIG =====
+// ⚠️ استبدل القيمتين دول ببياناتك من Supabase Dashboard
+const SUPABASE_URL = 'https://ucddgvjmxldyoqxmivdr.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjZGRndmpteGxkeW9xeG1pdmRyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NzE0MDEsImV4cCI6MjA5MjA0NzQwMX0.jLbS9ZqjGBpygXUcs_T4mOdlm0ibwtXwM0ZSKPG8nzE';
+
+
+// التحقق من وجود المكتبة قبل إنشاء العميل لمنع خطأ ReferenceError
+const _supabase = (typeof supabase !== 'undefined') ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+
 // ===== VERCEL ANALYTICS =====
 function trackEvent(eventName, props) {
     try {
@@ -57,10 +66,6 @@ function resetTurnstile() {
     }
 }
 
-// ===== SUPABASE CONFIG =====
-// ⚠️ استبدل القيمتين دول ببياناتك من Supabase Dashboard
-const SUPABASE_URL = 'https://ucddgvjmxldyoqxmivdr.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjZGRndmpteGxkeW9xeG1pdmRyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NzE0MDEsImV4cCI6MjA5MjA0NzQwMX0.jLbS9ZqjGBpygXUcs_T4mOdlm0ibwtXwM0ZSKPG8nzE';
 
 async function saveToSupabase(data) {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/bookings`, {
@@ -266,7 +271,16 @@ async function handleBookingSubmit(e) {
     }
 
     const bookingData = { fullName, email, phone, company, service, meetingDate, projectDescription, bookingTime: new Date().toLocaleString(), bookingId: generateBookingId() };
-
+    // --- الخطوة الجديدة: إرسال البيانات إلى Supabase ---
+    if (_supabase) {
+        try {
+            const { error } = await _supabase.from('bookings').insert([bookingData]);
+            if (error) throw error;
+            console.log('✅ تم حفظ البيانات في Supabase');
+        } catch (err) {
+            console.error('❌ خطأ في Supabase:', err.message);
+        }
+    }
     try {
         localStorage.setItem('lastBooking', JSON.stringify(bookingData));
         const history = JSON.parse(localStorage.getItem('bookingHistory') || '[]');
@@ -407,6 +421,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     // PERF FIX: chart.js lazy loaded when chart enters viewport (saves ~200KB on initial load)
+    
     lazyLoadChart();
     updatePromoContent('web');
     const bookingForm = document.getElementById('bookingForm');
