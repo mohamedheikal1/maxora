@@ -41,7 +41,8 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
     <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
-
+      <!-- =====cloudflare ===== -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <!-- ===== VERCEL SPEED INSIGHTS ===== -->
     <script>
     window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
@@ -1193,6 +1194,7 @@
                     <label class="form-label" for="projectDescInput" data-ar="وصف المشروع" data-en="Project Description">Project Description</label>
                     <textarea id="projectDescInput" name="projectDescription" class="form-input form-textarea" placeholder="Tell us about your project..." required></textarea>
                 </div>
+                <div class="cf-turnstile" data-sitekey="0x4AAAAAAC_LCVnU-7i42Ime"></div>
                 <button type="submit" class="submit-btn" data-ar="تأكيد الموعد ✦" data-en="Confirm Appointment ✦">Confirm Appointment ✦</button>
             </form>
         </div>
