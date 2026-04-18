@@ -85,8 +85,7 @@ async function saveToSupabase(data) {
             meeting_date: data.meetingDate,
             description:  data.projectDescription,
             booking_id:   data.bookingId,
-            status:       'pending',
-            created_at:   new Date().toISOString()
+            status:       'pending'
         })
     });
     if (!res.ok) {
@@ -242,9 +241,10 @@ async function handleBookingSubmit(e) {
         return;
     }
 
-    // Turnstile CAPTCHA check
+    // Turnstile CAPTCHA check — allow if failed due to network/extension blocking
     const turnstileToken = getTurnstileToken();
-    if (!turnstileToken) {
+    const isTurnstileFailed = window.turnstileFailed === true;
+    if (!turnstileToken && !isTurnstileFailed) {
         trackEvent('booking_validation_error', { reason: 'captcha_missing' });
         showFormError(currentLang === 'ar'
             ? '⚠️ يرجى إكمال التحقق من الهوية أولاً!'
@@ -272,6 +272,16 @@ async function handleBookingSubmit(e) {
     }
 
     const bookingData = { fullName, email, phone, company, service, meetingDate, projectDescription, bookingTime: new Date().toLocaleString(), bookingId: generateBookingId() };
+    // --- الخطوة الجديدة: إرسال البيانات إلى Supabase ---
+    if (_supabase) {
+        try {
+            const { error } = await _supabase.from('bookings').insert([bookingData]);
+            if (error) throw error;
+            console.log('✅ تم حفظ البيانات في Supabase');
+        } catch (err) {
+            console.error('❌ خطأ في Supabase:', err.message);
+        }
+    }
     try {
         localStorage.setItem('lastBooking', JSON.stringify(bookingData));
         const history = JSON.parse(localStorage.getItem('bookingHistory') || '[]');
@@ -281,9 +291,9 @@ async function handleBookingSubmit(e) {
 
     showFormLoading(true);
     // Save to Supabase DB
-    try { await saveToSupabase(bookingData); } catch(err) {}
+    try { await saveToSupabase(bookingData); } catch(err) { console.warn('Supabase err:', err); }
     // Send email via Formspree
-    try { await sendEmailViaFormspree(bookingData); } catch(err) {}
+    try { await sendEmailViaFormspree(bookingData); } catch(err) { console.warn('Email err:', err); }
     // Send WhatsApp notification
     sendToWhatsApp(bookingData);
     recordAttempt(); // rate limiting
@@ -441,4 +451,6 @@ function lazyLoadChart() {
     observer.observe(canvas);
 }
 
-// MAXORA — Where Growth Meets Technology
+window.addEventListener('load', () => {
+    console.log('%c✅ MAXORA — Where Growth Meets Technology', 'font-size:14px;color:#d4af37;font-weight:bold');
+});
